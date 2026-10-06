@@ -56,7 +56,7 @@ function buildElim(ids,dbl,second){
    teams as it can and only an odd count produces a bye: at most one per round, never for a team that has
    already had one, and drawn at random instead of going to the top seeds. 13 teams need 2 byes, not 3. */
 function fairByes(n){let c=n,b=0;while(c>1){if(c%2)b++;c=Math.ceil(c/2)}return b}
-function buildFair(ids){
+function buildFair(ids,second){
   const n=ids.length,ms=[],size=Math.max(2,nextPow2(n));
   let cur=seedOrder(size).filter(s=>s<=n).map(s=>({ref:{t:'e',id:ids[s-1]},had:false})),r=0;
   while(cur.length>1){
@@ -71,6 +71,20 @@ function buildFair(ids){
     if(byeAt>=0)items.splice(Math.min(Math.floor(byeAt/2),items.length),0,{m:{br:'W',r,a:cur[byeAt].ref,b:{t:'b'}},had:true});
     items.forEach((it,k)=>{it.m.id='W'+r+'-'+(k+1);ms.push(it.m)});
     cur=items.map(it=>({ref:{t:'w',m:it.m.id},had:it.had}));
+  }
+  if(second){
+    /* Second chance: a team that would get a bye plays the loser of a real match from the same round instead.
+       The winner takes the bye team's place in the next round, so nobody gets a free pass. */
+    const byes=ms.filter(m=>m.b.t==='b'),plays=[];
+    for(const B of byes){
+      const real=ms.filter(m=>m.r===B.r&&m.b.t!=='b'&&m.a.t!=='b');if(!real.length)continue;
+      const R=real[Math.floor(Math.random()*real.length)];
+      const P={id:'P'+(plays.length+1),br:'W',r:B.r+0.5,a:B.a,b:{t:'l',m:R.id}};
+      plays.push(P);
+      ms.forEach(m=>{if(m.a.t==='w'&&m.a.m===B.id)m.a={t:'w',m:P.id};if(m.b.t==='w'&&m.b.m===B.id)m.b={t:'w',m:P.id}});
+      ms.splice(ms.indexOf(B),1);
+    }
+    ms.push(...plays);ms.sort((x,y)=>x.r-y.r);
   }
   ms.forEach((m,i)=>m.n=i+1);return ms;
 }
