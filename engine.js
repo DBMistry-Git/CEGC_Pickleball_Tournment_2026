@@ -88,6 +88,76 @@ function buildFair(ids,second){
   }
   ms.forEach((m,i)=>m.n=i+1);return ms;
 }
+/* Fewest-byes double elimination.
+   The winners bracket is the fewest-byes bracket above. The losers bracket is built round by round: after each winners
+   round its real losers drop in, meet the losers-bracket survivors, and an odd count gives one bye (never to a slot that
+   already had one). Pairings avoid rematches of teams that could have just met where the bracket allows it.
+   A classic 16-slot bracket for 13 teams has 3 bye slots in the winners bracket plus gaps in the losers bracket. */
+function buildFairDouble(ids){
+  const wms=buildFair(ids),ms=wms.slice(),byId={};wms.forEach(m=>byId[m.id]=m);
+  const R=Math.max(...wms.map(m=>m.r));
+  const last='W'+R+'-1';
+  if(R<2){
+    ms.push({id:'GF',br:'F',r:1,a:{t:'w',m:last},b:{t:'l',m:last}});
+    ms.push({id:'GR',br:'F',r:2,cond:true,a:{t:'x',m:'GF',s:'a'},b:{t:'x',m:'GF',s:'b'}});
+    ms.forEach((m,i)=>m.n=i+1);return ms;
+  }
+  const desc={};
+  const D=id=>{if(desc[id])return desc[id];const m=byId[id],st=new Set([id]);[m.a,m.b].forEach(x=>{if(x.t==='w')D(x.m).forEach(v=>st.add(v))});return desc[id]=st};
+  wms.forEach(m=>D(m.id));
+  const pick=a=>a[Math.floor(Math.random()*a.length)];
+  let lr=0,pool=[];
+  const conflict=(sv,dp)=>{for(const o of sv.org)if(desc[dp.from].has(o))return true;return false};
+  /* turn a list of finished pairings (plus an optional bye slot) into one losers-bracket round */
+  function play(pairs,bye){
+    lr++;const items=[];
+    pairs.forEach(([x,y])=>items.push({m:{br:'L',r:lr,a:x.ref,b:y.ref},had:x.had||y.had,org:new Set([...x.org,...y.org])}));
+    if(bye)items.splice(Math.min(Math.floor(items.length/2),items.length),0,{m:{br:'L',r:lr,a:bye.ref,b:{t:'b'}},had:true,org:bye.org});
+    items.forEach((it,k)=>{it.m.id='L'+lr+'-'+(k+1);ms.push(it.m)});
+    return items.map(it=>({ref:{t:'w',m:it.m.id},had:it.had,org:it.org}));
+  }
+  /* pair a list of same-kind slots with each other; an odd one out takes the bye */
+  function among(list){
+    if(list.length<2)return list;
+    let u=list.slice(),bye=null;
+    if(u.length%2){const fresh=u.filter(x=>!x.had),b=pick(fresh.length?fresh:u);bye=b;u=u.filter(x=>x!==b)}
+    const pairs=[];for(let i=0;i<u.length;i+=2)pairs.push([u[i],u[i+1]]);
+    return play(pairs,bye);
+  }
+  /* survivors meet this round's droppers, one to one where possible */
+  function merge(S,Dr){
+    if(!S.length)return among(Dr);
+    if(!Dr.length)return among(S);
+    const free=S.slice(),pairs=[];
+    const order=Dr.slice().sort(()=>Math.random()-.5);
+    const leftD=[];
+    for(const d of order){
+      if(!free.length){leftD.push(d);continue}
+      const ok=free.filter(sv=>!conflict(sv,d)),c=pick(ok.length?ok:free);
+      free.splice(free.indexOf(c),1);pairs.push([c,d]);
+    }
+    const rest=free.concat(leftD);
+    let bye=null,u=rest;
+    if(u.length%2){const fresh=u.filter(x=>!x.had),b=pick(fresh.length?fresh:u);bye=b;u=u.filter(x=>x!==b)}
+    for(let i=0;i<u.length;i+=2)pairs.push([u[i],u[i+1]]);
+    return play(pairs,bye);
+  }
+  for(let r=1;r<=R;r++){
+    const drops=wms.filter(m=>m.r===r&&m.a.t!=='b'&&m.b.t!=='b').map(m=>({ref:{t:'l',m:m.id},had:false,org:new Set([m.id]),from:m.id}));
+    if(r>=2)while(pool.length>drops.length&&pool.length>=2)pool=among(pool);
+    pool=r===1?among(drops):merge(pool,drops);
+  }
+  while(pool.length>1)pool=among(pool);
+  ms.push({id:'GF',br:'F',r:1,a:{t:'w',m:last},b:pool[0].ref});
+  ms.push({id:'GR',br:'F',r:2,cond:true,a:{t:'x',m:'GF',s:'a'},b:{t:'x',m:'GF',s:'b'}});
+  ms.forEach((m,i)=>m.n=i+1);return ms;
+}
+/* How many games of a double-elimination bracket are byes (counted by playing it through with the first-listed side winning). */
+function byeGames(ms){
+  const t={format:'double',matches:ms,results:{}};
+  for(const m of ms){const c=compute(t)[m.id];if(!c||c.skip||c.pending||c.a===undefined||c.b===undefined||c.a==='bye'||c.b==='bye')continue;t.results[m.id]={sig:c.a+'|'+c.b,sa:11,sb:5}}
+  const comp=compute(t);return ms.filter(m=>comp[m.id]&&comp[m.id].auto).length;
+}
 function buildRR(ids){
   const arr=ids.slice();if(arr.length%2)arr.push(null);
   const n=arr.length,fixed=arr[0],rot=arr.slice(1),ms=[];
@@ -214,4 +284,4 @@ function stats(t,comp,pc){
   return {played:a.p+b.p,total};
 }
 
-if(typeof module!=='undefined'&&module.exports){module.exports={nextPow2,seedOrder,num,buildElim,buildFair,fairByes,buildRR,compute,champion,standings,pairUp,swissNext,shuffle,allComp,stageDone,syncPlayoff,stats};}
+if(typeof module!=='undefined'&&module.exports){module.exports={nextPow2,seedOrder,num,buildElim,buildFair,buildFairDouble,byeGames,fairByes,buildRR,compute,champion,standings,pairUp,swissNext,shuffle,allComp,stageDone,syncPlayoff,stats};}

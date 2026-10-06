@@ -144,7 +144,7 @@ async function boot(){
   paintSync();
   if(RO)startPolling();
 }
-const E=()=>S.E[S.ev],isD=()=>S.ev==='doubles',sty=()=>E().style||'fair';
+const E=()=>S.E[S.ev],isD=()=>S.ev==='doubles',sty=()=>E().style||'fair',dsty=()=>sty()==='classic'?'classic':'fair';
 let SM={};
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const pid=()=>'p'+(S.uid++), tid=()=>'t'+(S.uid++);
@@ -340,11 +340,19 @@ function bracketBody(){
 function head(t,champ,st){
   const pct=st.total?Math.min(100,Math.round(100*st.played/st.total)):0;
   const c=champ?entMap[champ]:null;
-  return `<section class="card"><header><div><h2>${esc(t.name)}</h2><p class="hint">${FORMATS[t.format].label}${t.format==='single'?(t.style==='second'||(!t.style&&t.second)?' + second chance':t.style==='fair'?' · fewest byes':t.style==='fairsecond'?' · fewest byes + second chance':''):''}${t.qual?' + top '+t.qual+' knockout':''} · ${t.entrants.length} ${t.mode==='teams'?'teams':'players'}</p></div>
+  return `<section class="card"><header><div><h2>${esc(t.name)}</h2><p class="hint">${FORMATS[t.format].label}${t.format==='single'?(t.style==='second'||(!t.style&&t.second)?' + second chance':t.style==='fair'?' · fewest byes':t.style==='fairsecond'?' · fewest byes + second chance':''):t.format==='double'&&t.style==='fair'?' · fewest byes':''}${t.qual?' + top '+t.qual+' knockout':''} · ${t.entrants.length} ${t.mode==='teams'?'teams':'players'}</p></div>
     <div class="row">${confirmReset?`<span class="hint">This clears every result.</span><button class="btn danger" data-act="resetT">Yes, reset</button><button class="btn" data-act="cancelReset">Keep going</button>`:confirmRoll?`<span class="hint">This clears every result.</span><button class="btn danger" data-act="doReroll">Yes, re-roll</button><button class="btn" data-act="cancelRoll">Keep going</button>`:`<button class="btn" data-act="reroll">Re-roll draw</button><button class="btn" data-act="askReset">Edit setup</button>`}</div></header>
     <div class="prog" role="progressbar" aria-label="Matches played" aria-valuenow="${pct}" aria-valuemin="0" aria-valuemax="100"><span style="width:${pct}%"></span></div>
     <p class="hint">${st.played} of ${st.total} matches played</p></section>
     ${c?`<div class="champ"><span class="lbl">Champion</span><b>${esc(c.name)}</b>${c.members.length&&c.members.join(' & ')!==c.name?`<span>${esc(c.members.join(' & '))}</span>`:''}</div>`:''}`;
+}
+function doubleHint(n){
+  if(n<3)return '';
+  const id=Array.from({length:n},(_,i)=>'x'+i);
+  try{
+    const f=byeGames(buildFairDouble(id)),c=byeGames(buildElim(id,true,false));
+    return dsty()==='fair'?` With ${n} ${isD()?'teams':'players'} this has ${f} bye game${f===1?'':'s'} (a classic bracket has ${c}). Each round pairs as many as it can, and byes go to a random ${isD()?'team':'player'} that has not had one.`:` With ${n} ${isD()?'teams':'players'} this has ${c} bye game${c===1?'':'s'}; a fewest-byes bracket has ${f}.`;
+  }catch(e){return ''}
 }
 function setupView(){
   const n=isD()?S.teams.length:S.players.filter(p=>p.singles!==false).length;
@@ -366,8 +374,10 @@ function setupView(){
         <option value="fair"${sty()==='fair'?' selected':''}>Fewest byes (fairest)</option>
         <option value="fairsecond"${sty()==='fairsecond'?' selected':''}>Fewest byes + second chance</option>
         <option value="second"${sty()==='second'?' selected':''}>Second chance (classic bracket)</option>
-        <option value="classic"${sty()==='classic'?' selected':''}>Classic (pads to a power of two)</option></select></div>`:''}
-    <p class="hint">${FORMATS[E().format].hint}${E().format==='single'?(sty()==='fairsecond'?` With ${n} ${isD()?'teams':'players'} the fair bracket has ${fairByes(n)} bye slot${fairByes(n)===1?'':'s'}. Each one becomes a game: the ${isD()?'team':'player'} that would get the bye plays the loser of a match from the same round, and the winner moves on, so nobody gets a free pass.`:sty()==='fair'?` With ${n} ${isD()?'teams':'players'} this needs ${fairByes(n)} bye${fairByes(n)===1?'':'s'} (a classic bracket needs ${nextPow2(Math.max(2,n))-n}). At most one bye per round, a ${isD()?'team':'player'} is not given two, and byes are drawn at random instead of going to the top seeds.`:sty()==='second'?' Instead of a free pass, a team without a round-1 game plays a round-1 loser, and the winner moves on.':' Byes go to the top seeds so the bracket fills to a power of two.'):''}${staged&&qsel?` The top ${qsel} then qualify automatically as soon as every match has a score, seeded by standing, and play a single-elimination knockout.`:''}</p>
+        <option value="classic"${sty()==='classic'?' selected':''}>Classic (pads to a power of two)</option></select></div>`:E().format==='double'?`<div class="field"><label for="style">Bracket style</label><select id="style" data-chg="style">
+        <option value="fair"${dsty()==='fair'?' selected':''}>Fewest byes (fairest)</option>
+        <option value="classic"${dsty()==='classic'?' selected':''}>Classic (pads to a power of two)</option></select></div>`:''}
+    <p class="hint">${FORMATS[E().format].hint}${E().format==='double'?doubleHint(n):''}${E().format==='single'?(sty()==='fairsecond'?` With ${n} ${isD()?'teams':'players'} the fair bracket has ${fairByes(n)} bye slot${fairByes(n)===1?'':'s'}. Each one becomes a game: the ${isD()?'team':'player'} that would get the bye plays the loser of a match from the same round, and the winner moves on, so nobody gets a free pass.`:sty()==='fair'?` With ${n} ${isD()?'teams':'players'} this needs ${fairByes(n)} bye${fairByes(n)===1?'':'s'} (a classic bracket needs ${nextPow2(Math.max(2,n))-n}). At most one bye per round, a ${isD()?'team':'player'} is not given two, and byes are drawn at random instead of going to the top seeds.`:sty()==='second'?' Instead of a free pass, a team without a round-1 game plays a round-1 loser, and the winner moves on.':' Byes go to the top seeds so the bracket fills to a power of two.'):''}${staged&&qsel?` The top ${qsel} then qualify automatically as soon as every match has a score, seeded by standing, and play a single-elimination knockout.`:''}</p>
     ${isD()&&unassigned().length?`<p class="hint">${unassigned().length} player${unassigned().length>1?'s are':' is'} not on a team yet and will not be entered.</p>`:''}
     <div class="row"><button class="btn primary" data-act="start">Start tournament</button></div>
   </section>`;
@@ -546,10 +556,10 @@ function startTournament(force){
   if(E().seeding==='random'||force)ents=shuffle(ents);
   if(E().seeding==='skill')ents=shuffle(ents).sort((a,b)=>b.skill-a.skill);
   const ids=ents.map(e=>e.id),f=E().format;
-  const t={name:S.name+(isD()?' · Doubles':' · Singles'),format:f,mode:isD()?'teams':'singles',entrants:ents,matches:[],results:{},second:sty()==='second',style:sty(),po:null};
+  const t={name:S.name+(isD()?' · Doubles':' · Singles'),format:f,mode:isD()?'teams':'singles',entrants:ents,matches:[],results:{},second:sty()==='second',style:f==='double'?dsty():sty(),po:null};
   t.qual=(f==='rr'||f==='swiss')&&E().qual>=2&&ents.length>=3?Math.min(E().qual,ents.length):0;
   if(f==='single'){t.matches=sty()==='fair'||sty()==='fairsecond'?buildFair(ids,sty()==='fairsecond'):buildElim(ids,false,t.second)}
-  else if(f==='double')t.matches=buildElim(ids,true);
+  else if(f==='double')t.matches=dsty()==='fair'?buildFairDouble(ids):buildElim(ids,true);
   else if(f==='rr')t.matches=buildRR(ids);
   else{t.swissRounds=Math.max(1,Math.min(12,E().swissRounds||Math.ceil(Math.log2(Math.max(2,ids.length)))));t.round=0;t.matches=swissNext(t);t.round=1}
   dropSched(S.ev);E().t=t;S.tab='bracket';confirmReset=false;confirmRoll=false;note('');render();window.scrollTo(0,0);
