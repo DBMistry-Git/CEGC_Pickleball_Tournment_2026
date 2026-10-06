@@ -16,6 +16,44 @@ python -m http.server 8000     # or: npm start
 
 Opening `index.html` straight from the disk also works for editing, but the browser blocks `fetch`, so it starts from the built-in roster instead of `state.json`. Use the local server.
 
+## One-click publish (optional)
+
+In editor mode, **Publish to site** writes `state.json` straight to this repo with the GitHub API, so no download or upload is needed.
+
+1. GitHub > Settings > Developer settings > Personal access tokens > Fine-grained tokens > Generate new token.
+2. Limit it to this one repository, set **Contents** to **Read and write**, and use a short expiry.
+3. Open the page with `#edit`, press **Set token** and paste it. It is kept only in that browser.
+4. Press **Publish to site**. GitHub Pages updates in about a minute.
+
+Delete the token on GitHub when the event is over.
+
+## Single-elimination styles
+
+- **Fewest byes (default):** every round pairs as many teams as possible, so only an odd count gives a bye. That is at most one per round, drawn at random, and a team is not given two. 13 teams need 2 byes (classic: 3), 18 need 3 (classic: 14). A bye late in the bracket is worth more than one in round 1.
+- **Second chance:** a team without a round-1 game plays a round-1 loser.
+- **Classic:** pads to a power of two; byes go to the top seeds.
+
+## Double elimination
+
+- **Fewest byes (default):** the winners bracket uses the fewest-byes layout, and the losers bracket is built round by round so that only an odd count gives a bye. 13 teams have 3 bye games (classic: 6); 18 have 6 (classic: 28). Everyone is out after exactly two losses.
+- **Classic:** pads to a power of two, so small fields get many byes.
+
+## Doubles first, then rolling singles
+
+The intended flow for the day:
+
+1. **Doubles tab:** build the teams, pick Single elimination (fewest byes) and press Start tournament.
+2. **Singles tab:** leave the format on Rolling single elimination and press Open singles. Anyone who is not on a doubles team is free straight away, so they can start playing on spare courts.
+3. As soon as a doubles team loses, its players appear under **Free players** (Singles tab) and under **Free for singles** (Schedule tab). Press Add on one player or Add all. Each new player is paired with the next free player at once, winners meet winners, and new matches appear for the scheduler. Doubles partners are not paired with each other while another opponent is waiting.
+4. Tick the box to add knocked-out players automatically if you would rather not press anything. Press the x on a chip for anyone who is not playing singles.
+5. When nobody else will join, press **Close entries**. The bracket finishes itself. A player waiting without an opponent goes straight into a later round, which is the fewest byes possible (the same count as the fewest-byes bracket). Reopen entries works until a closing-stage match has been played.
+
+Editing on the go: adding players, adding teams, naming courts or marking someone as not playing singles never touches a running bracket. Anything that would restart a bracket that already has results (removing a team in the bracket, clearing players, changing team size) asks first.
+
+### Scheduler
+
+Doubles matches are placed first, then singles on whatever courts are left, and nobody is booked twice in a slot. Because singles matches appear during the event, **Fill open courts** puts newly ready matches into empty courts of slots that are not finished, and **Schedule next slot** adds a new row. A player who just played gets a rest slot when the courts allow it.
+
 ## Publishing a change
 
 1. Open `/#edit` locally and make your changes (scores, teams, schedule).

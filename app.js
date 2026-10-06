@@ -6,13 +6,14 @@ const FORMATS={
   single:{label:'Single elimination',hint:'Lose once and you are out. Byes fill the bracket when the entrant count is not a power of two.'},
   double:{label:'Double elimination',hint:'Everyone gets a second life through a losers bracket. A grand final with a reset match decides the champion.'},
   rr:{label:'Round robin',hint:'Every entrant plays every other entrant once. Ranked by points, then score difference.'},
+  roll:{label:'Rolling single elimination',hint:'Players join while the event runs. Anyone who is free is paired with the next free player, winners meet winners, and nobody is knocked out of the draw by arriving late. Press Close entries when nobody else will join and the bracket finishes itself with the fewest possible byes.'},
   swiss:{label:'Swiss',hint:'A fixed number of rounds. Each round pairs entrants with similar records and avoids rematches.'}
 };
 function fresh(){
   /* CEGC Pickleball Tournament 2026: doubles entrants from the registration sheet.
      Experience: 1 = never played, 2 = a few times, 3 = regularly. Partners who did not fill in the form default to 2. */
-  const nE=()=>({format:'single',seeding:'random',swissRounds:0,qual:4,style:'fair',second:false,t:null});
-  const S={name:'CEGC Pickleball Tournament 2026',teamSize:2,players:[],teams:[],apart:[],scheme:'num2',ev:'doubles',E:{doubles:nE(),singles:nE()},sched:{courts:2,start:'16:30',len:20,rest:true,slots:[]},uid:1,tab:'teams',sample:false};
+  const nE=f=>({format:f||'single',seeding:'random',swissRounds:0,qual:4,style:'fair',second:false,t:null});
+  const S={name:'CEGC Pickleball Tournament 2026',teamSize:2,players:[],teams:[],apart:[],scheme:'num2',ev:'doubles',E:{doubles:nE('single'),singles:nE('roll')},sched:{courts:2,start:'16:30',len:20,rest:true,slots:[]},uid:1,tab:'teams',sample:false};
   const add=(n,s)=>{const p={id:'p'+(S.uid++),name:n,skill:s};S.players.push(p);return p.id};
   const pairs=[[['Ryan Burrows',3],['Kevin Donnelly',2]],[['Hitarth Thakkar',2],['Ajeet Singh',2]],[['Mahmud Hussain Masum',3],['Abdulla Hasan',2]],
     [['Shekhar Shinde',1],['Tanay Jawdekar',2]],[['Md Majidur Rahman',2],['Md Imam Hossain',2]],[['Virginia Lopez',2],['Ana Carolina Silva Barbeta',2]]];
@@ -36,7 +37,7 @@ async function fetchPublished(){
   try{const r=await fetch('state.json?'+Date.now(),{cache:'no-store'});if(!r.ok)return null;const o=await r.json();return validState(o)?o:null}catch(e){return null}
 }
 function readDraft(){try{const d=JSON.parse(localStorage.getItem(DKEY)||'null');return validState(d)?d:null}catch(e){return null}}
-function adopt(o){const tab=S&&S.tab,ev=S&&S.ev;S=JSON.parse(JSON.stringify(o.S));S.tab=tab||'teams';S.ev=ev||'doubles';META={rev:o.rev||0,at:o.at||null}}
+function adopt(o){const tab=S&&S.tab,ev=S&&S.ev;S=JSON.parse(JSON.stringify(o.S));if(S.E.singles&&!S.E.singles.t&&S.E.singles.format==='single')S.E.singles.format='roll';S.tab=tab||'teams';S.ev=ev||'doubles';META={rev:o.rev||0,at:o.at||null}}
 function isDirty(){return !RO&&JSON.stringify(sharedState())!==pubSig}
 function save(){
   try{localStorage.setItem(VKEY,JSON.stringify({tab:S.tab,ev:S.ev,sv:SV}))}catch(e){}
@@ -161,8 +162,71 @@ function teamName(t,i){
 function skillOptions(sel){return [1,2,3].map(v=>`<option value="${v}"${v===sel?' selected':''}>${SKILL[v]}</option>`).join('')}
 function note(m){msg=m}
 
+
+/* ----- rolling singles: who is free, adding players live ----- */
+function doublesStatus(){
+  const D=S.E.doubles.t;if(!D)return null;
+  const comp=allComp(D),loss={};
+  D.matches.forEach(m=>{const r=comp[m.id];if(r&&!r.skip&&r.w&&r.l&&r.l!=='bye'&&!r.auto)loss[r.l]=(loss[r.l]||0)+1});
+  const lim=D.format==='double'?2:1;
+  const over=isElim(D)?!!champion(D,comp):stageDone(D,compute(D));
+  const out=new Set(),inD=new Set();
+  D.entrants.forEach(e=>{e.memberIds.forEach(x=>inD.add(x));if(over||(isElim(D)&&(loss[e.id]||0)>=lim))e.memberIds.forEach(x=>out.add(x))});
+  return {out,inD};
+}
+function freePlayers(){
+  const sT=S.E.singles.t,inS=new Set(sT?sT.entrants.map(e=>e.id):[]),D=doublesStatus(),team=assigned();
+  return S.players.filter(p=>{
+    if(p.singles===false||inS.has(p.id))return false;
+    if(!D)return !team.has(p.id);
+    return D.inD.has(p.id)?D.out.has(p.id):true;
+  });
+}
+function rollEntrant(p){
+  const tm=S.teams.find(t=>t.members.includes(p.id));
+  return {id:p.id,name:p.name,members:[],memberIds:[p.id],skill:p.skill,mates:tm?tm.members.filter(m=>m!==p.id):[]};
+}
+function addToRoll(ids){
+  const t=S.E.singles.t;if(!t||t.format!=='roll'||t.closed)return 0;
+  const list=ids.length>1?shuffle(ids):ids;let c=0;
+  list.forEach(id=>{const p=P(id);if(p&&!t.entrants.some(e=>e.id===id)){t.entrants.push(rollEntrant(p));c++}});
+  rollSync(t);return c;
+}
+function newRoll(){return {name:S.name+' · Singles',format:'roll',mode:'singles',entrants:[],matches:[],results:{},closed:false,seq:0,auto:false,style:'roll',po:null}}
+function startRoll(){
+  dropSched('singles');S.E.singles.t=newRoll();
+  return addToRoll(freePlayers().map(p=>p.id));
+}
+function syncRoll(){
+  const t=S.E.singles.t;if(RO||!t||t.format!=='roll')return;
+  if(t.auto&&!t.closed){const f=freePlayers().map(p=>p.id);if(f.length){addToRoll(f);return}}
+  rollSync(t);
+}
+const hasResults=ev=>{const t=S.E[ev].t;return !!(t&&Object.keys(t.results||{}).length)};
+const okToWipe=ev=>!hasResults(ev)||confirm('This restarts the '+ev+' bracket and clears its results. Continue?');
+const inRunning=(ev,id)=>{const t=S.E[ev].t;return !!(t&&t.entrants.some(e=>e.id===id||e.memberIds.includes(id)))};
+function rollPanel(t,comp){
+  if(RO)return t.closed?'':'<section class="card"><p class="hint">Singles is open. Players join as they finish their doubles games, so new matches appear here during the event.</p></section>';
+  const free=freePlayers(),inM=new Set();
+  t.matches.forEach(m=>[m.a,m.b].forEach(s=>{if(s.t==='e')inM.add(s.id)}));
+  const lone=t.entrants.filter(e=>!inM.has(e.id));
+  const canReopen=t.closed&&!t.matches.some(m=>m.cl&&t.results[m.id]);
+  const chips=free.map(p=>`<span class="chip free"><span>${esc(p.name)}</span>${t.closed?'':`<button class="btn small" data-act="rollAdd" data-id="${p.id}">Add</button>`}<button class="x" aria-label="${esc(p.name)} is not playing singles" title="Not playing singles" data-act="noSingles" data-id="${p.id}">×</button></span>`).join('');
+  const D=S.E.doubles.t;
+  const idle=D?'Nobody is free right now. A player shows up here as soon as their doubles team loses.':'Nobody is free right now. Players who are not on a doubles team show up here, and so does everyone whose team loses.';
+  return `<section class="card"><header><h2>Free players</h2><span class="pill${free.length?' on':''}">${free.length} free</span></header>
+    ${t.closed?`<p class="hint">Entries are closed. The bracket is complete with ${rollByes(t)} bye${rollByes(t)===1?'':'s'}, which is the fewest possible for ${t.entrants.length} players.</p>`:`<p class="hint">Add players the moment they are free. Each one is paired with the next free player straight away and the new match is ready for a court. Doubles partners are not paired with each other while anyone else is waiting.</p>`}
+    ${free.length?`<div class="chips">${chips}</div>`:`<p class="hint">${idle}</p>`}
+    ${lone.length&&!t.closed?`<p class="hint"><b>Waiting for an opponent:</b> ${lone.map(e=>`${esc(e.name)} <button class="x" aria-label="Remove ${esc(e.name)} from singles" data-act="rollRm" data-id="${e.id}">×</button>`).join(', ')}</p>`:''}
+    <div class="row">${t.closed?`<button class="btn"${canReopen?'':' disabled'} data-act="rollReopen">Reopen entries</button>${canReopen?'':'<span class="hint">A closing-stage match has been played, so entries cannot reopen.</span>'}`
+      :`<button class="btn primary" data-act="rollAddAll"${free.length?'':' disabled'}>Add all ${free.length||''}</button>
+      <label class="chk"><input type="checkbox" data-chg="rollAuto"${t.auto?' checked':''}> Add players automatically when they are knocked out of doubles</label>
+      <button class="btn" data-act="rollClose">Close entries</button>`}</div></section>`;
+}
+
 /* ----- views ----- */
 function render(){
+  syncRoll();
   save();
   const ae=document.activeElement;let fkey=null;
   if(ae&&ae.closest&&ae.closest('#app')){if(ae.id)fkey='#'+ae.id;else if(ae.dataset&&ae.dataset.m&&ae.dataset.chg==='score')fkey='[data-chg="score"][data-m="'+ae.dataset.m+'"][data-s="'+ae.dataset.s+'"]'}
@@ -276,14 +340,14 @@ function colTitle(br,r,maxR,m){
   if(br==='L')return 'Losers round '+r;
   return m.id==='GF'?'Grand final':'Reset match';
 }
-function elimSections(ms,comp,groups){
+function elimSections(ms,comp,groups,plain){
   return groups.map(([br,title])=>{
     const part=ms.filter(m=>m.br===br),rounds={};
     part.forEach(m=>{const r=comp[m.id];if(r.skip||(r.w==='bye'&&r.a==='bye'&&r.b==='bye'))return;if(m.cond&&r.pending)return;(rounds[m.r]=rounds[m.r]||[]).push(m)});
     const maxR=Math.max(0,...part.map(m=>Math.floor(m.r)));
     const cols=Object.keys(rounds).map(Number).sort((a,b)=>a-b).map(rn=>{
       const list=rounds[rn];
-      return `<div class="col"><div class="coltitle">${colTitle(br,rn,maxR,list[0])}</div>${list.map(m=>matchCard(m,comp[m.id],true)).join('')}</div>`;
+      return `<div class="col"><div class="coltitle">${plain?'Round '+rn:colTitle(br,rn,maxR,list[0])}</div>${list.map(m=>matchCard(m,comp[m.id],true)).join('')}</div>`;
     }).join('');
     const gr=br==='F'&&comp.GR&&comp.GR.pending?'<p class="hint">A reset match appears only if the losers-bracket finalist wins the grand final.</p>':'';
     return `<div class="sect">${title?`<h3>${title}</h3>`:''}<div class="scroller"><div class="cols">${cols}</div></div>${gr}</div>`;
@@ -291,7 +355,7 @@ function elimSections(ms,comp,groups){
 }
 function upNext(t,comp,pc){
   const rows=[];
-  const el=t.format==='single'||t.format==='double';
+  const el=isElim(t);
   const scan=(ms,c,elim)=>ms.forEach(m=>{const r=c[m.id];if(r&&!r.skip&&!r.w&&!r.auto&&!(r.draw&&!elim)&&r.a&&r.b&&r.a!=='bye'&&r.b!=='bye')rows.push({n:m.n,a:r.a,b:r.b})});
   scan(t.matches,comp,el);if(t.po)scan(t.po.matches,pc,true);
   rows.sort((x,y)=>x.n-y.n);
@@ -309,9 +373,9 @@ function bracketBody(){
   let pc=null;
   if(t.po){pc=compute({matches:t.po.matches,results:t.results});t.po.matches.forEach(m=>numMap[m.id]=m.n)}
   let champ=null,body='';
-  if(t.format==='single'||t.format==='double'){
+  if(isElim(t)){
     champ=champion(t,comp);
-    body=elimSections(t.matches,comp,t.format==='double'?[['W','Winners bracket'],['L','Losers bracket'],['F','Finals']]:[['W','']]);
+    body=elimSections(t.matches,comp,t.format==='double'?[['W','Winners bracket'],['L','Losers bracket'],['F','Finals']]:[['W','']],t.format==='roll'&&!t.closed);
   }else{
     const rows=standings(t,comp),q=t.qual||0,done=stageDone(t,comp);
     const anyPlayed=t.matches.some(m=>{const r=comp[m.id];return (r.w||r.draw)&&!r.auto});
@@ -335,15 +399,15 @@ function bracketBody(){
     else if(!q&&done)champ=rows[0].id;
     body=`<section class="card"><header><h2>Standings</h2>${q?`<span class="hint">Top ${q} qualify for the knockout</span>`:''}</header>${ctl}${tb}${cut?`<p class="hint warn">Position ${q} and ${q+1} are level on every tiebreak. Entry order decides for now; a changed score will separate them.</p>`:''}</section>${ko}<div class="rounds">${rl}</div>`;
   }
-  return head(t,champ,stats(t,comp,pc))+upNext(t,comp,pc)+body;
+  return head(t,champ,stats(t,comp,pc))+(t.format==='roll'?rollPanel(t,comp):'')+upNext(t,comp,pc)+body;
 }
 function head(t,champ,st){
   const pct=st.total?Math.min(100,Math.round(100*st.played/st.total)):0;
   const c=champ?entMap[champ]:null;
-  return `<section class="card"><header><div><h2>${esc(t.name)}</h2><p class="hint">${FORMATS[t.format].label}${t.format==='single'?(t.style==='second'||(!t.style&&t.second)?' + second chance':t.style==='fair'?' · fewest byes':t.style==='fairsecond'?' · fewest byes + second chance':''):t.format==='double'&&t.style==='fair'?' · fewest byes':''}${t.qual?' + top '+t.qual+' knockout':''} · ${t.entrants.length} ${t.mode==='teams'?'teams':'players'}</p></div>
-    <div class="row">${confirmReset?`<span class="hint">This clears every result.</span><button class="btn danger" data-act="resetT">Yes, reset</button><button class="btn" data-act="cancelReset">Keep going</button>`:confirmRoll?`<span class="hint">This clears every result.</span><button class="btn danger" data-act="doReroll">Yes, re-roll</button><button class="btn" data-act="cancelRoll">Keep going</button>`:`<button class="btn" data-act="reroll">Re-roll draw</button><button class="btn" data-act="askReset">Edit setup</button>`}</div></header>
+  return `<section class="card"><header><div><h2>${esc(t.name)}</h2><p class="hint">${FORMATS[t.format].label}${t.format==='roll'?(t.closed?' · entries closed':' · entries open'):''}${t.format==='single'?(t.style==='second'||(!t.style&&t.second)?' + second chance':t.style==='fair'?' · fewest byes':t.style==='fairsecond'?' · fewest byes + second chance':''):t.format==='double'&&t.style==='fair'?' · fewest byes':''}${t.qual?' + top '+t.qual+' knockout':''} · ${t.entrants.length} ${t.mode==='teams'?'teams':'players'}</p></div>
+    <div class="row">${confirmReset?`<span class="hint">This clears every result.</span><button class="btn danger" data-act="resetT">Yes, reset</button><button class="btn" data-act="cancelReset">Keep going</button>`:confirmRoll?`<span class="hint">This clears every result.</span><button class="btn danger" data-act="doReroll">Yes, re-roll</button><button class="btn" data-act="cancelRoll">Keep going</button>`:`${t.format==="roll"?"":`<button class="btn" data-act="reroll">Re-roll draw</button>`}<button class="btn" data-act="askReset">Edit setup</button>`}</div></header>
     <div class="prog" role="progressbar" aria-label="Matches played" aria-valuenow="${pct}" aria-valuemin="0" aria-valuemax="100"><span style="width:${pct}%"></span></div>
-    <p class="hint">${st.played} of ${st.total} matches played</p></section>
+    <p class="hint">${st.played} of ${st.total} matches played${t.format==='roll'&&!t.closed?' so far. More matches appear as players join.':''}</p></section>
     ${c?`<div class="champ"><span class="lbl">Champion</span><b>${esc(c.name)}</b>${c.members.length&&c.members.join(' & ')!==c.name?`<span>${esc(c.members.join(' & '))}</span>`:''}</div>`:''}`;
 }
 function doubleHint(n){
@@ -355,18 +419,19 @@ function doubleHint(n){
   }catch(e){return ''}
 }
 function setupView(){
-  const n=isD()?S.teams.length:S.players.filter(p=>p.singles!==false).length;
+  const roll=!isD()&&E().format==='roll';
+  const n=isD()?S.teams.length:roll?freePlayers().length:S.players.filter(p=>p.singles!==false).length;
   const auto=Math.max(1,Math.ceil(Math.log2(Math.max(2,n))));
   const staged=E().format==='rr'||E().format==='swiss';
   const qmax=Math.min(n,16),qsel=E().qual>=2?Math.min(E().qual,qmax):0;
   const qopts=['<option value="0"'+(qsel===0?' selected':'')+'>None, standings only</option>'].concat(Array.from({length:Math.max(0,qmax-1)},(_,i)=>i+2).map(v=>`<option value="${v}"${qsel===v?' selected':''}>Top ${v}</option>`)).join('');
-  return `<section class="card"><header><h2>Set up the ${isD()?'doubles':'singles'} bracket</h2><span class="pill">${n} ${isD()?'teams':'players'} ready</span></header>
+  return `<section class="card"><header><h2>Set up the ${isD()?'doubles':'singles'} bracket</h2><span class="pill">${n} ${isD()?'teams':'players'} ${roll?'free now':'ready'}</span></header>
     <div class="row">
-      <div class="field"><label for="fmt">Format</label><select id="fmt" data-chg="format">${Object.keys(FORMATS).map(k=>`<option value="${k}"${E().format===k?' selected':''}>${FORMATS[k].label}</option>`).join('')}</select></div>
-      <div class="field"><label for="seeding">Seeding</label><select id="seeding" data-chg="seeding">
+      <div class="field"><label for="fmt">Format</label><select id="fmt" data-chg="format">${Object.keys(FORMATS).filter(k=>k!=='roll'||!isD()).map(k=>`<option value="${k}"${E().format===k?' selected':''}>${FORMATS[k].label}</option>`).join('')}</select></div>
+      ${roll?'':`<div class="field"><label for="seeding">Seeding</label><select id="seeding" data-chg="seeding">
         <option value="random"${E().seeding==='random'?' selected':''}>Random</option>
         <option value="order"${E().seeding==='order'?' selected':''}>Order entered</option>
-        <option value="skill"${E().seeding==='skill'?' selected':''}>Most experienced first</option></select></div>
+        <option value="skill"${E().seeding==='skill'?' selected':''}>Most experienced first</option></select></div>`}
       ${E().format==='swiss'?`<div class="field"><label for="srounds">Swiss rounds</label><input type="number" id="srounds" min="1" max="12" data-chg="srounds" value="${E().swissRounds||auto}" style="width:6rem"></div>`:''}
       ${staged?`<div class="field"><label for="qual">Qualify for knockout</label><select id="qual" data-chg="qual">${qopts}</select></div>`:''}
     </div>
@@ -379,7 +444,8 @@ function setupView(){
         <option value="classic"${dsty()==='classic'?' selected':''}>Classic (pads to a power of two)</option></select></div>`:''}
     <p class="hint">${FORMATS[E().format].hint}${E().format==='double'?doubleHint(n):''}${E().format==='single'?(sty()==='fairsecond'?` With ${n} ${isD()?'teams':'players'} the fair bracket has ${fairByes(n)} bye slot${fairByes(n)===1?'':'s'}. Each one becomes a game: the ${isD()?'team':'player'} that would get the bye plays the loser of a match from the same round, and the winner moves on, so nobody gets a free pass.`:sty()==='fair'?` With ${n} ${isD()?'teams':'players'} this needs ${fairByes(n)} bye${fairByes(n)===1?'':'s'} (a classic bracket needs ${nextPow2(Math.max(2,n))-n}). At most one bye per round, a ${isD()?'team':'player'} is not given two, and byes are drawn at random instead of going to the top seeds.`:sty()==='second'?' Instead of a free pass, a team without a round-1 game plays a round-1 loser, and the winner moves on.':' Byes go to the top seeds so the bracket fills to a power of two.'):''}${staged&&qsel?` The top ${qsel} then qualify automatically as soon as every match has a score, seeded by standing, and play a single-elimination knockout.`:''}</p>
     ${isD()&&unassigned().length?`<p class="hint">${unassigned().length} player${unassigned().length>1?'s are':' is'} not on a team yet and will not be entered.</p>`:''}
-    <div class="row"><button class="btn primary" data-act="start">Start tournament</button></div>
+    ${roll?`<p class="hint">${n?`Free right now: ${freePlayers().map(p=>esc(p.name)).join(', ')}.`:'Nobody is free yet.'} You can open singles with whoever is free, even if that is nobody, and add players later from the Free players card or the Schedule tab.</p>`:''}
+    <div class="row"><button class="btn primary" data-act="start">${roll?'Open singles':'Start tournament'}</button></div>
   </section>`;
 }
 
@@ -388,7 +454,7 @@ function allMatchesOf(t){return t.matches.concat(t.po?t.po.matches:[])}
 function evInfo(ev){
   const t=S.E[ev].t;if(!t)return null;
   const comp=allComp(t),ent={};t.entrants.forEach(e=>ent[e.id]=e);
-  return {ev,t,comp,ent,elim:t.format==='single'||t.format==='double'};
+  return {ev,t,comp,ent,elim:isElim(t)};
 }
 function schedKeys(){const s=new Set();S.sched.slots.forEach(sl=>sl.items.forEach(i=>s.add(i.ev+':'+i.id)));return s}
 function schedMap(){const m={};S.sched.slots.forEach((sl,si)=>sl.items.forEach(i=>m[i.ev+':'+i.id]={slot:si,court:i.court}));return m}
@@ -448,8 +514,8 @@ function buildAll(){
   let n=0;while(n<60&&buildSlot(true))n++;
   note(n?('Scheduled '+n+' slot'+(n===1?'':'s')+' with every match that is ready.'):'Nothing is ready to schedule. Enter results to unlock the next round.');
 }
-function fillCell(si,court){
-  const sc=S.sched,sl=sc.slots[si];if(!sl||sl.items.some(i=>i.court===court))return;
+function fillCell(si,court,quiet){
+  const sc=S.sched,sl=sc.slots[si];if(!sl||sl.items.some(i=>i.court===court))return false;
   const busy=new Set(),tired=new Set();
   sl.items.forEach(i=>i.players.forEach(p=>busy.add(p)));
   if(sc.rest&&si>0)sc.slots[si-1].items.forEach(it=>it.players.forEach(p=>tired.add(p)));
@@ -457,10 +523,22 @@ function fillCell(si,court){
   const rested=c=>!c.players.some(p=>tired.has(p));
   const pick=ok.filter(c=>c.ev==='doubles'&&rested(c)).sort(ord)[0]||ok.filter(c=>c.ev==='singles'&&rested(c)).sort(ord)[0]
     ||ok.filter(c=>c.ev==='doubles').sort(ord)[0]||ok.filter(c=>c.ev==='singles').sort(ord)[0];
-  if(!pick){note('No ready match fits '+cname(court)+' in this slot. Everyone left is already playing or waiting on a result.');return}
+  if(!pick){if(!quiet)note('No ready match fits '+cname(court)+' in this slot. Everyone left is already playing or waiting on a result.');return false}
   sl.items.push({ev:pick.ev,id:pick.id,court,players:pick.players});
   sl.items.sort((x,y)=>x.court-y.court);
-  note('Placed M'+pick.n+' ('+(pick.ev==='doubles'?'doubles':'singles')+') on '+cname(court)+'.');
+  if(!quiet)note('Placed M'+pick.n+' ('+(pick.ev==='doubles'?'doubles':'singles')+') on '+cname(court)+'.');
+  return true;
+}
+/* Courts that were left empty when a slot was built can take matches that became ready later, such as singles for players who just lost in doubles.
+   Slots that are completely played are left alone. */
+function fillGaps(){
+  const sc=S.sched,open=openCourts();let n=0,d=0,s=0;
+  const done=sl=>sl.items.length&&sl.items.every(it=>{const X=evInfo(it.ev),r=X&&X.comp[it.id];return r&&(r.w||r.auto)});
+  sc.slots.forEach((sl,si)=>{if(done(sl))return;open.forEach(c=>{
+    if(sl.items.some(i=>i.court===c))return;
+    if(fillCell(si,c,true)){n++;const it=sl.items.find(i=>i.court===c);if(it.ev==='doubles')d++;else s++}
+  })});
+  note(n?('Filled '+n+' open court'+(n===1?'':'s')+': '+d+' doubles and '+s+' singles. Run Schedule next slot for anything still waiting.'):'No open court can take a ready match. Everyone ready is already placed, or players need a rest between matches.');
 }
 function dropSched(ev){
   S.sched.slots.forEach(sl=>sl.items=sl.items.filter(i=>i.ev!==ev));
@@ -524,21 +602,29 @@ function scheduleFull(){
   const tog=`<div class="vtog" role="group" aria-label="Schedule view"><button data-act="sv" data-v="court" aria-pressed="${SV==='court'}">By court</button><button data-act="sv" data-v="time" aria-pressed="${SV==='time'}">By time</button></div>`;
   const board=sc.slots.length?(SV==='court'?`<section class="card"><header><h2>Court board</h2>${tog}</header>${grid}<p class="hint"><span class="pill ev-d">Doubles</span> <span class="pill ev-s">Singles</span> The first unfinished match on each court is marked NOW.</p></section>`
     :`<section class="card"><header><h2>By time</h2>${tog}</header></section>${list}`):`<section class="card"><header><h2>Court board</h2></header>${none}</section>`;
-  return `<section class="card"><header><h2>Court schedule</h2><span class="pill${ready.length?' on':''}">${ready.length} ready to play</span></header>
-    <p class="hint">Each row is a time slot and each column a court. Doubles fill the courts first; leftover courts go to singles whose players are free. A team stays on its court when it can. Rename or close courts in the column headers, or press Fill on an empty court to place the best ready match there.</p>
+  const sT=S.E.singles.t,rollOpen=S.E.singles.format==='roll'&&(!sT||(sT.format==='roll'&&!sT.closed));
+  const freeNow=RO||!rollOpen?[]:freePlayers();
+  const rdS=ready.filter(m=>m.ev==='singles').length;
+  const freeCard=freeNow.length||(!RO&&rdS)?`<section class="card"><header><h3>Free for singles</h3><span class="pill${freeNow.length?' on':''}">${freeNow.length} free</span></header>
+    ${freeNow.length?`<div class="chips">${freeNow.map(p=>`<span class="chip plain">${esc(p.name)}</span>`).join('')}</div>`:'<p class="hint">Nobody new is free.</p>'}
+    <div class="row">${freeNow.length?`<button class="btn primary" data-act="rollAddAll">${sT?'Add all to singles':'Open singles with these players'}</button>`:''}<button class="btn" data-act="fillgaps"${ready.length?'':' disabled'}>Fill open courts</button></div>
+    <p class="hint">${rdS?rdS+' singles match'+(rdS===1?' is':'es are')+' ready for a court. ':''}Adding players pairs them right away. Fill open courts puts ready matches into empty courts of slots that are not finished; Schedule next slot adds a new row.</p></section>`:'';
+  return freeCard+`<section class="card"><header><h2>Court schedule</h2><span class="pill${ready.length?' on':''}">${ready.length} ready to play</span></header>
+    <p class="hint">Each row is a time slot and each column a court. Doubles fill the courts first; leftover courts go to singles, including players who were knocked out of doubles and added to singles during the event. Nobody is booked twice in a slot, and a team stays on its court when it can. Rename or close courts in the column headers, or press Fill on an empty court to place the best ready match there.</p>
     <div class="row">
       <div class="field"><label for="courts">Courts</label><input type="number" id="courts" min="1" max="12" data-chg="sched" data-k="courts" value="${sc.courts}" style="width:5rem"></div>
       <div class="field"><label for="sstart">First match</label><input type="time" id="sstart" data-chg="sched" data-k="start" value="${esc(sc.start)}"></div>
       <div class="field"><label for="slen">Minutes per slot</label><input type="number" id="slen" min="5" max="120" step="5" data-chg="sched" data-k="len" value="${sc.len}" style="width:6rem"></div>
     </div>
     <label class="row" style="gap:.4rem"><input type="checkbox" id="srest" data-chg="sched" data-k="rest"${sc.rest?' checked':''}> Avoid back-to-back matches for the same player</label>
-    <div class="row"><button class="btn primary" data-act="slot"${started?'':' disabled'}>Schedule next slot</button><button class="btn" data-act="slotall"${started?'':' disabled'}>Schedule all ready</button><button class="btn" data-act="addslot"${started?'':' disabled'}>Add empty slot</button><button class="btn" data-act="unslot"${sc.slots.length?'':' disabled'}>Remove last slot</button></div>
+    <div class="row"><button class="btn primary" data-act="slot"${started?'':' disabled'}>Schedule next slot</button><button class="btn" data-act="slotall"${started?'':' disabled'}>Schedule all ready</button><button class="btn" data-act="fillgaps"${sc.slots.length&&ready.length?'':' disabled'}>Fill open courts</button><button class="btn" data-act="addslot"${started?'':' disabled'}>Add empty slot</button><button class="btn" data-act="unslot"${sc.slots.length?'':' disabled'}>Remove last slot</button></div>
   </section>${board}`;
 }
 function evSwitch(){
   const b=ev=>{
     const t=S.E[ev].t;let sub='Not started';
     if(t){const c=compute(t),pc=t.po?compute({matches:t.po.matches,results:t.results}):null,st=stats(t,c,pc);sub=st.played+' of '+st.total+' played'}
+    if(ev==='singles'&&!RO){const f=freePlayers().length;if(f)sub+=' · '+f+' free'}
     return `<button class="segb" data-act="ev" data-ev="${ev}" aria-pressed="${S.ev===ev}"><b>${ev==='doubles'?'Doubles':'Singles'}</b><span>${sub}</span></button>`;
   };
   return `<div class="seg" role="group" aria-label="Event">${b('doubles')}${b('singles')}</div>`;
@@ -546,6 +632,10 @@ function evSwitch(){
 
 /* ----- actions ----- */
 function startTournament(force){
+  if(!isD()&&E().format==='roll'){
+    const c=startRoll();S.tab='bracket';confirmReset=false;confirmRoll=false;
+    note(c?'Singles is open with '+c+' player'+(c===1?'':'s')+'. Add more as players get free.':'Singles is open. Add players as they get free.');render();window.scrollTo(0,0);return;
+  }
   let ents;
   if(isD()){
     const bad=S.teams.filter(t=>t.members.length!==S.teamSize);
@@ -571,6 +661,19 @@ function act(a,d){
     case 'tab':S.tab=d.tab;confirmReset=false;confirmRoll=false;msg='';break;
     case 'dismiss':msg='';break;
     case 'ev':S.ev=d.ev;confirmReset=false;confirmRoll=false;msg='';break;
+    case 'rollAdd':{const c=addToRoll([d.id]);const t=S.E.singles.t;note(c?(P(d.id).name+' added to singles.'):'');break}
+    case 'rollAddAll':{
+      const ids=freePlayers().map(p=>p.id);
+      if(!S.E.singles.t&&S.E.singles.format==='roll'){startRoll();note('Singles opened with '+ids.length+' player'+(ids.length===1?'':'s')+'.')}
+      else{const c=addToRoll(ids);note(c+' player'+(c===1?'':'s')+' added to singles.')}
+      const rd=readyMatches().filter(m=>m.ev==='singles').length;
+      if(rd)msg+=' '+rd+' singles match'+(rd===1?' is':'es are')+' ready for a court.';
+      break}
+    case 'rollClose':{const t=S.E.singles.t;t.closed=true;rollSync(t);note('Entries closed. The bracket is now complete.');break}
+    case 'rollReopen':{const t=S.E.singles.t;note(rollReopen(t)?'Entries reopened. Add players again.':'Could not reopen: a closing-stage match has already been played.');break}
+    case 'rollRm':{const t=S.E.singles.t;t.entrants=t.entrants.filter(e=>e.id!==d.id);rollSync(t);break}
+    case 'noSingles':{const p=P(d.id);if(p)p.singles=false;note(p.name+' is marked as not playing singles. Tick Singles on the Players tab to undo.');break}
+    case 'fillgaps':fillGaps();break;
     case 'slot':buildSlot();break;
     case 'unslot':S.sched.slots.pop();msg='';break;
     case 'slotall':buildAll();break;
@@ -582,13 +685,13 @@ function act(a,d){
     case 'tok':setToken();break;
     case 'dl':downloadState();break;
     case 'discard':discardDraft();break;
-    case 'clearPlayers':S.players=[];S.teams=[];S.apart=[];S.sample=false;invalidate();break;
-    case 'rmPlayer':invalidate();S.players=S.players.filter(p=>p.id!==d.id);S.teams.forEach(t=>t.members=t.members.filter(m=>m!==d.id));S.apart=S.apart.filter(r=>!r.includes(d.id));break;
+    case 'clearPlayers':if(!okToWipe('doubles')||!okToWipe('singles'))break;S.players=[];S.teams=[];S.apart=[];S.sample=false;invalidate();break;
+    case 'rmPlayer':{if(inRunning('doubles',d.id)){if(!okToWipe('doubles'))break;invalidate('doubles')}if(inRunning('singles',d.id)){if(!okToWipe('singles'))break;invalidate('singles')}}S.players=S.players.filter(p=>p.id!==d.id);S.teams.forEach(t=>t.members=t.members.filter(m=>m!==d.id));S.apart=S.apart.filter(r=>!r.includes(d.id));break;
     case 'bulkAdd':{
       const v=document.getElementById('bulk').value.split('\n').map(s=>s.trim()).filter(Boolean);let c=0;
       v.forEach(line=>{const m=line.match(/^(.*?)(?:\s*,\s*([1-3]))?$/);const nm=m[1].trim();if(nm){S.players.push({id:pid(),name:nm,skill:m[2]?+m[2]:2,singles:true});c++}});
       if(c)S.sample=false;note(c?c+' players added.':'Paste at least one name.');break}
-    case 'addEmpty':S.teams.push({id:tid(),members:[]});invalidate('doubles');break;
+    case 'addEmpty':S.teams.push({id:tid(),members:[]});break;
     case 'addPre':{
       const lines=document.getElementById('pre').value.split('\n').map(s=>s.trim()).filter(Boolean);let c=0;
       lines.forEach(line=>{
@@ -597,11 +700,11 @@ function act(a,d){
         const taken=assigned();const mem=ids.filter(i=>!taken.has(i));
         if(mem.length){S.teams.push({id:tid(),members:mem});c++}
       });
-      if(c){S.sample=false;invalidate('doubles')}note(c?c+' teams added.':'Write at least one team, like “Name & Name”.');break}
-    case 'delTeam':S.teams=S.teams.filter(t=>t.id!==d.id);invalidate('doubles');break;
-    case 'clearTeams':S.teams=[];invalidate('doubles');break;
+      if(c)S.sample=false;note(c?c+' teams added.'+(S.E.doubles.t?' They are not in the running doubles bracket. Use Edit setup on the Doubles tab to rebuild it.':''):'Write at least one team, like “Name & Name”.');break}
+    case 'delTeam':if(inRunning('doubles',d.id)){if(!okToWipe('doubles'))break;invalidate('doubles')}S.teams=S.teams.filter(t=>t.id!==d.id);break;
+    case 'clearTeams':if(!okToWipe('doubles'))break;S.teams=[];invalidate('doubles');break;
     case 'resetNames':S.teams.forEach(t=>delete t.custom);break;
-    case 'rmMember':{const t=S.teams.find(t=>t.id===d.t);t.members=t.members.filter(m=>m!==d.p);invalidate('doubles');break}
+    case 'rmMember':{const t=S.teams.find(t=>t.id===d.t);if(inRunning('doubles',t.id)){if(!okToWipe('doubles'))break;invalidate('doubles')}t.members=t.members.filter(m=>m!==d.p);break}
     case 'start':return startTournament();
     case 'reroll':{if(Object.keys(E().t.results).length){confirmRoll=true;break}return startTournament(true)}
     case 'doReroll':return startTournament(true);
@@ -621,15 +724,16 @@ function chg(a,d,el){
   if(RO)return;
   switch(a){
     case 'tname':S.name=el.value.trim()||'Tournament';break;
-    case 'psingles':{const p=P(d.id);p.singles=el.checked;invalidate('singles');break}
+    case 'rollAuto':{const t=S.E.singles.t;if(t)t.auto=el.checked;break}
+    case 'psingles':{const p=P(d.id),t=S.E.singles.t;if(t&&t.format!=='roll'){if(!okToWipe('singles')){el.checked=!el.checked;return}invalidate('singles')}p.singles=el.checked;break}
     case 'cname':{const n=S.sched.names=S.sched.names||{};const v=el.value.trim();if(v&&v!=='Court '+d.c)n[d.c]=v;else delete n[d.c];break}
     case 'copen':{const o=new Set(S.sched.off||[]);if(el.checked)o.delete(+d.c);else o.add(+d.c);S.sched.off=[...o].sort((a,b)=>a-b);break}
     case 'sched':{const k=d.k;S.sched[k]=k==='rest'?el.checked:k==='start'?(el.value||'09:00'):Math.max(1,+el.value||1);break}
-    case 'tsize':S.teamSize=+el.value;S.teams=[];invalidate('doubles');note('Team size changed, so the teams were cleared.');break;
+    case 'tsize':if(!okToWipe('doubles')){el.value=S.teamSize;return}S.teamSize=+el.value;S.teams=[];invalidate('doubles');note('Team size changed, so the teams were cleared.');break;
     case 'pskill':P(d.id).skill=+el.value;break;
     case 'scheme':S.scheme=el.value;S.teams.forEach(t=>delete t.custom);break;
     case 'teamname':{const t=S.teams.find(t=>t.id===d.id);const i=S.teams.indexOf(t);const v=el.value.trim();if(!v||v===teamName({...t,custom:null},i))delete t.custom;else t.custom=v;break}
-    case 'addMember':{if(!el.value)return;const t=S.teams.find(t=>t.id===d.t);if(t.members.length<S.teamSize&&!assigned().has(el.value))t.members.push(el.value);invalidate('doubles');break}
+    case 'addMember':{if(!el.value)return;const t=S.teams.find(t=>t.id===d.t);if(inRunning('doubles',t.id)){if(!okToWipe('doubles')){el.value='';return}invalidate('doubles')}if(t.members.length<S.teamSize&&!assigned().has(el.value))t.members.push(el.value);break}
     case 'format':E().format=el.value;break;
     case 'style':E().style=el.value;E().second=el.value==='second';break;
     case 'qual':E().qual=+el.value;break;

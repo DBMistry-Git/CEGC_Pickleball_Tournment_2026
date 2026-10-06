@@ -158,6 +158,58 @@ function byeGames(ms){
   for(const m of ms){const c=compute(t)[m.id];if(!c||c.skip||c.pending||c.a===undefined||c.b===undefined||c.a==='bye'||c.b==='bye')continue;t.results[m.id]={sig:c.a+'|'+c.b,sa:11,sb:5}}
   const comp=compute(t);return ms.filter(m=>comp[m.id]&&comp[m.id].auto).length;
 }
+/* Rolling single elimination: players join while the event is running.
+   Entrants are paired the moment two are waiting at the same level (round 1 for newcomers, round r+1 for the winners of round r),
+   so the bracket grows as people get free. Doubles partners are not paired with each other while another opponent exists.
+   Closing entries finishes the tree: the lowest waiting player is matched with the next waiting player and skips the rounds in
+   between, so the number of byes equals the fewest possible (fairByes). Matches made after closing carry cl:true so entries can be reopened. */
+function isElim(t){return t.format==='single'||t.format==='double'||t.format==='roll'}
+function rollSync(t){
+  t.seq=t.seq||0;t.entrants=t.entrants||[];t.matches=t.matches||[];t.results=t.results||{};
+  const mates={};t.entrants.forEach(e=>mates[e.id]=e.mates||[]);
+  const key=s=>s.t==='e'?'e'+s.id:'w'+s.m;
+  function waiting(){
+    const used=new Set(),out=[];
+    t.matches.forEach(m=>{used.add(key(m.a));used.add(key(m.b))});
+    t.entrants.forEach((e,i)=>{const ref={t:'e',id:e.id};if(!used.has(key(ref)))out.push({ref,lv:1,o:i,id:e.id})});
+    t.matches.forEach(m=>{const ref={t:'w',m:m.id};if(!used.has(key(ref)))out.push({ref,lv:m.r+1,o:1e6+m.n})});
+    return out.sort((x,y)=>x.lv-y.lv||x.o-y.o);
+  }
+  const mk=(r,a,b)=>{const m={id:'Q'+(++t.seq),br:'W',r,a,b,n:t.matches.length+1};if(t.closed)m.cl=true;t.matches.push(m)};
+  const ok=(x,y,strict)=>!strict||x.lv!==1||!((mates[x.id]||[]).includes(y.id)||(mates[y.id]||[]).includes(x.id));
+  function pair(strict){
+    const w=waiting();
+    for(let i=0;i<w.length;i++)for(let j=i+1;j<w.length;j++){
+      if(w[j].lv!==w[i].lv)break;
+      if(!ok(w[i],w[j],strict))continue;
+      mk(w[i].lv,w[i].ref,w[j].ref);return true;
+    }
+    return false;
+  }
+  for(let g=0;g<2000;g++){
+    if(pair(true))continue;
+    if(!t.closed)break;
+    if(pair(false))continue;
+    const w=waiting();
+    if(w.length>1){mk(w[1].lv,w[0].ref,w[1].ref);continue}
+    break;
+  }
+  const w=waiting();
+  t.final=t.closed&&w.length===1&&w[0].ref.t==='w'?w[0].ref.m:null;
+  return t;
+}
+function rollReopen(t){
+  const cl=t.matches.filter(m=>m.cl);
+  if(cl.some(m=>t.results[m.id]))return false;
+  cl.forEach(m=>delete t.results[m.id]);
+  t.matches=t.matches.filter(m=>!m.cl);t.closed=false;t.final=null;
+  return true;
+}
+/* Byes in a rolling bracket = rounds skipped by players who go straight into a later round. */
+function rollByes(t){
+  const lv=s=>s.t==='e'?1:t.matches.find(m=>m.id===s.m).r+1;
+  return t.matches.reduce((s,m)=>s+(m.r-lv(m.a))+(m.r-lv(m.b)),0);
+}
 function buildRR(ids){
   const arr=ids.slice();if(arr.length%2)arr.push(null);
   const n=arr.length,fixed=arr[0],rot=arr.slice(1),ms=[];
@@ -204,6 +256,11 @@ function compute(t){
   t.matches.forEach(res);return memo;
 }
 function champion(t,comp){
+  if(t.format==='roll'){
+    if(!t.closed)return null;
+    if(t.final){const r=comp[t.final];return r&&r.w&&r.w!=='bye'?r.w:null}
+    return t.entrants.length===1&&!t.matches.length?t.entrants[0].id:null;
+  }
   if(t.format==='single'){const f=t.matches.filter(m=>m.br==='W').pop();const r=comp[f.id];return r&&r.w&&r.w!=='bye'?r.w:null}
   if(t.format==='double'){
     const g=comp.GF,r=comp.GR;if(!g||g.w===undefined)return null;
@@ -274,7 +331,7 @@ function syncPlayoff(t){
   t.po={ids:top,matches:ms};
 }
 function stats(t,comp,pc){
-  const el=t.format==='single'||t.format==='double';
+  const el=isElim(t);
   let mp=0,mt=0,pp=0,pt=0;
   const scan=(ms,c,elim,add)=>ms.forEach(m=>{const r=c[m.id];if(!r||r.skip||(m.cond&&r.pending)||r.auto||r.w==='bye')return;add.t++;if(r.w||(!elim&&r.draw))add.p++});
   const a={p:0,t:0},b={p:0,t:0};
@@ -284,4 +341,4 @@ function stats(t,comp,pc){
   return {played:a.p+b.p,total};
 }
 
-if(typeof module!=='undefined'&&module.exports){module.exports={nextPow2,seedOrder,num,buildElim,buildFair,buildFairDouble,byeGames,fairByes,buildRR,compute,champion,standings,pairUp,swissNext,shuffle,allComp,stageDone,syncPlayoff,stats};}
+if(typeof module!=='undefined'&&module.exports){module.exports={isElim,rollSync,rollReopen,rollByes,nextPow2,seedOrder,num,buildElim,buildFair,buildFairDouble,byeGames,fairByes,buildRR,compute,champion,standings,pairUp,swissNext,shuffle,allComp,stageDone,syncPlayoff,stats};}

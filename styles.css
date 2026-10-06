@@ -207,3 +207,7 @@ input.sc:focus-visible{outline:2px solid var(--court);outline-offset:1px}
 /* Court schedule */
 .cg-h{border-top:3px solid var(--court)}
 .cg-c.now{background:color-mix(in srgb,var(--ball) 35%,var(--surface))}
+
+/* rolling singles: free players */
+.chip.free{padding:.2rem .3rem .2rem .7rem;background:var(--court-soft)}
+.chip.free .btn.small{padding:.15rem .6rem}
