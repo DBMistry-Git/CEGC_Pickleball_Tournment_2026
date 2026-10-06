@@ -51,6 +51,29 @@ function buildElim(ids,dbl,second){
   }
   ms.forEach((m,i)=>m.n=i+1);return ms;
 }
+/* Fewest-byes single elimination.
+   A classic bracket pads to a power of two, so 9 teams would need 7 byes. Here every round pairs as many
+   teams as it can and only an odd count produces a bye: at most one per round, never for a team that has
+   already had one, and drawn at random instead of going to the top seeds. 13 teams need 2 byes, not 3. */
+function fairByes(n){let c=n,b=0;while(c>1){if(c%2)b++;c=Math.ceil(c/2)}return b}
+function buildFair(ids){
+  const n=ids.length,ms=[],size=Math.max(2,nextPow2(n));
+  let cur=seedOrder(size).filter(s=>s<=n).map(s=>({ref:{t:'e',id:ids[s-1]},had:false})),r=0;
+  while(cur.length>1){
+    r++;let byeAt=-1;
+    if(cur.length%2){
+      let pool=cur.map((x,i)=>i).filter(i=>!cur[i].had);
+      if(!pool.length)pool=cur.map((x,i)=>i);
+      byeAt=pool[Math.floor(Math.random()*pool.length)];
+    }
+    const rest=cur.filter((x,i)=>i!==byeAt),items=[];
+    for(let k=0;k<rest.length;k+=2)items.push({m:{br:'W',r,a:rest[k].ref,b:rest[k+1].ref},had:rest[k].had||rest[k+1].had});
+    if(byeAt>=0)items.splice(Math.min(Math.floor(byeAt/2),items.length),0,{m:{br:'W',r,a:cur[byeAt].ref,b:{t:'b'}},had:true});
+    items.forEach((it,k)=>{it.m.id='W'+r+'-'+(k+1);ms.push(it.m)});
+    cur=items.map(it=>({ref:{t:'w',m:it.m.id},had:it.had}));
+  }
+  ms.forEach((m,i)=>m.n=i+1);return ms;
+}
 function buildRR(ids){
   const arr=ids.slice();if(arr.length%2)arr.push(null);
   const n=arr.length,fixed=arr[0],rot=arr.slice(1),ms=[];
@@ -177,4 +200,4 @@ function stats(t,comp,pc){
   return {played:a.p+b.p,total};
 }
 
-if(typeof module!=='undefined'&&module.exports){module.exports={nextPow2,seedOrder,num,buildElim,buildRR,compute,champion,standings,pairUp,swissNext,shuffle,allComp,stageDone,syncPlayoff,stats};}
+if(typeof module!=='undefined'&&module.exports){module.exports={nextPow2,seedOrder,num,buildElim,buildFair,fairByes,buildRR,compute,champion,standings,pairUp,swissNext,shuffle,allComp,stageDone,syncPlayoff,stats};}

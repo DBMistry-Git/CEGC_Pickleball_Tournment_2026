@@ -11,7 +11,7 @@ const FORMATS={
 function fresh(){
   /* CEGC Pickleball Tournament 2026: doubles entrants from the registration sheet.
      Experience: 1 = never played, 2 = a few times, 3 = regularly. Partners who did not fill in the form default to 2. */
-  const nE=()=>({format:'single',seeding:'random',swissRounds:0,qual:4,second:true,t:null});
+  const nE=()=>({format:'single',seeding:'random',swissRounds:0,qual:4,style:'fair',second:false,t:null});
   const S={name:'CEGC Pickleball Tournament 2026',teamSize:2,players:[],teams:[],apart:[],scheme:'num2',ev:'doubles',E:{doubles:nE(),singles:nE()},sched:{courts:2,start:'16:30',len:20,rest:true,slots:[]},uid:1,tab:'teams',sample:false};
   const add=(n,s)=>{const p={id:'p'+(S.uid++),name:n,skill:s};S.players.push(p);return p.id};
   const pairs=[[['Ryan Burrows',3],['Kevin Donnelly',2]],[['Hitarth Thakkar',2],['Ajeet Singh',2]],[['Mahmud Hussain Masum',3],['Abdulla Hasan',2]],
@@ -144,7 +144,7 @@ async function boot(){
   paintSync();
   if(RO)startPolling();
 }
-const E=()=>S.E[S.ev],isD=()=>S.ev==='doubles';
+const E=()=>S.E[S.ev],isD=()=>S.ev==='doubles',sty=()=>E().style||'fair';
 let SM={};
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const pid=()=>'p'+(S.uid++), tid=()=>'t'+(S.uid++);
@@ -339,7 +339,7 @@ function bracketBody(){
 function head(t,champ,st){
   const pct=st.total?Math.min(100,Math.round(100*st.played/st.total)):0;
   const c=champ?entMap[champ]:null;
-  return `<section class="card"><header><div><h2>${esc(t.name)}</h2><p class="hint">${FORMATS[t.format].label}${t.second&&t.format==='single'?' + second chance':''}${t.qual?' + top '+t.qual+' knockout':''} · ${t.entrants.length} ${t.mode==='teams'?'teams':'players'}</p></div>
+  return `<section class="card"><header><div><h2>${esc(t.name)}</h2><p class="hint">${FORMATS[t.format].label}${t.format==='single'?(t.style==='second'||(!t.style&&t.second)?' + second chance':t.style==='fair'?' · fewest byes':''):''}${t.qual?' + top '+t.qual+' knockout':''} · ${t.entrants.length} ${t.mode==='teams'?'teams':'players'}</p></div>
     <div class="row">${confirmReset?`<span class="hint">This clears every result.</span><button class="btn danger" data-act="resetT">Yes, reset</button><button class="btn" data-act="cancelReset">Keep going</button>`:confirmRoll?`<span class="hint">This clears every result.</span><button class="btn danger" data-act="doReroll">Yes, re-roll</button><button class="btn" data-act="cancelRoll">Keep going</button>`:`<button class="btn" data-act="reroll">Re-roll draw</button><button class="btn" data-act="askReset">Edit setup</button>`}</div></header>
     <div class="prog" role="progressbar" aria-label="Matches played" aria-valuenow="${pct}" aria-valuemin="0" aria-valuemax="100"><span style="width:${pct}%"></span></div>
     <p class="hint">${st.played} of ${st.total} matches played</p></section>
@@ -361,8 +361,11 @@ function setupView(){
       ${E().format==='swiss'?`<div class="field"><label for="srounds">Swiss rounds</label><input type="number" id="srounds" min="1" max="12" data-chg="srounds" value="${E().swissRounds||auto}" style="width:6rem"></div>`:''}
       ${staged?`<div class="field"><label for="qual">Qualify for knockout</label><select id="qual" data-chg="qual">${qopts}</select></div>`:''}
     </div>
-    ${E().format==='single'?`<label class="row" style="gap:.4rem"><input type="checkbox" id="second" data-chg="second"${E().second?' checked':''}> Second chance: a round-1 loser plays a ${isD()?'team':'player'} that had no round-1 game</label>`:''}
-    <p class="hint">${FORMATS[E().format].hint}${E().format==='single'&&E().second?' Instead of a free pass, a team without a round-1 game plays a round-1 loser, and the winner moves on.':''}${staged&&qsel?` The top ${qsel} then qualify automatically as soon as every match has a score, seeded by standing, and play a single-elimination knockout.`:''}</p>
+    ${E().format==='single'?`<div class="field"><label for="style">Bracket style</label><select id="style" data-chg="style">
+        <option value="fair"${sty()==='fair'?' selected':''}>Fewest byes (fairest)</option>
+        <option value="second"${sty()==='second'?' selected':''}>Second chance</option>
+        <option value="classic"${sty()==='classic'?' selected':''}>Classic (pads to a power of two)</option></select></div>`:''}
+    <p class="hint">${FORMATS[E().format].hint}${E().format==='single'?(sty()==='fair'?` With ${n} ${isD()?'teams':'players'} this needs ${fairByes(n)} bye${fairByes(n)===1?'':'s'} (a classic bracket needs ${nextPow2(Math.max(2,n))-n}). At most one bye per round, a ${isD()?'team':'player'} is not given two, and byes are drawn at random instead of going to the top seeds.`:sty()==='second'?' Instead of a free pass, a team without a round-1 game plays a round-1 loser, and the winner moves on.':' Byes go to the top seeds so the bracket fills to a power of two.'):''}${staged&&qsel?` The top ${qsel} then qualify automatically as soon as every match has a score, seeded by standing, and play a single-elimination knockout.`:''}</p>
     ${isD()&&unassigned().length?`<p class="hint">${unassigned().length} player${unassigned().length>1?'s are':' is'} not on a team yet and will not be entered.</p>`:''}
     <div class="row"><button class="btn primary" data-act="start">Start tournament</button></div>
   </section>`;
@@ -541,9 +544,9 @@ function startTournament(force){
   if(E().seeding==='random'||force)ents=shuffle(ents);
   if(E().seeding==='skill')ents=shuffle(ents).sort((a,b)=>b.skill-a.skill);
   const ids=ents.map(e=>e.id),f=E().format;
-  const t={name:S.name+(isD()?' · Doubles':' · Singles'),format:f,mode:isD()?'teams':'singles',entrants:ents,matches:[],results:{},second:!!E().second,po:null};
+  const t={name:S.name+(isD()?' · Doubles':' · Singles'),format:f,mode:isD()?'teams':'singles',entrants:ents,matches:[],results:{},second:sty()==='second',style:sty(),po:null};
   t.qual=(f==='rr'||f==='swiss')&&E().qual>=2&&ents.length>=3?Math.min(E().qual,ents.length):0;
-  if(f==='single'){t.matches=buildElim(ids,false,t.second)}
+  if(f==='single'){t.matches=sty()==='fair'?buildFair(ids):buildElim(ids,false,t.second)}
   else if(f==='double')t.matches=buildElim(ids,true);
   else if(f==='rr')t.matches=buildRR(ids);
   else{t.swissRounds=Math.max(1,Math.min(12,E().swissRounds||Math.ceil(Math.log2(Math.max(2,ids.length)))));t.round=0;t.matches=swissNext(t);t.round=1}
@@ -616,7 +619,7 @@ function chg(a,d,el){
     case 'teamname':{const t=S.teams.find(t=>t.id===d.id);const i=S.teams.indexOf(t);const v=el.value.trim();if(!v||v===teamName({...t,custom:null},i))delete t.custom;else t.custom=v;break}
     case 'addMember':{if(!el.value)return;const t=S.teams.find(t=>t.id===d.t);if(t.members.length<S.teamSize&&!assigned().has(el.value))t.members.push(el.value);invalidate('doubles');break}
     case 'format':E().format=el.value;break;
-    case 'second':E().second=el.checked;break;
+    case 'style':E().style=el.value;E().second=el.value==='second';break;
     case 'qual':E().qual=+el.value;break;
     case 'seeding':E().seeding=el.value;break;
     case 'srounds':E().swissRounds=Math.max(1,Math.min(12,+el.value||1));break;
