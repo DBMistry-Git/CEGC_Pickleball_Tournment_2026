@@ -1,27 +1,24 @@
 /* Layout: sticky top bar with tabs (Players, Teams, Bracket); one centered working column; brackets scroll sideways inside their own container.
-   Theme: pickleball court. Court blue is the action colour, the optic-yellow ball marks winners and the champion,
-   white court lines and a net-mesh edge sit on the navy top bar, and scores read like a scoreboard. */
+   Theme: soft pickleball court. Muted court green is the action colour, a soft ball yellow marks winners and the champion,
+   text is dark on a warm off-white so it stays easy to read. */
 :root{
-  --bg:#eef3f7; --surface:#ffffff; --surface2:#e2eaf2; --ink:#0f2233; --muted:#51657a; --line:#cdd9e5;
-  --court:#1457b8; --court-ink:#ffffff; --court-soft:#dbe8fb; --ball:#d9f23a; --ball-ink:#1f2a00; --bad:#b3402f;
-  --navy:#0b2f66; --navy2:#0a2249; --board:#0b1f3d; --mesh:rgba(11,34,73,.32);
+  --bg:#f5f6f2; --surface:#ffffff; --surface2:#ebeee8; --ink:#1c2826; --muted:#586663; --line:#dbe0d9;
+  --court:#2d6a57; --court-ink:#ffffff; --court-soft:#e0eee8; --ball:#e6df82; --ball-ink:#2b2800; --bad:#a63d2c;
   --display:'Barlow Condensed','Arial Narrow','Helvetica Neue',Arial,sans-serif;
   --body:'Barlow','Helvetica Neue',Arial,sans-serif;
   --mono:'IBM Plex Mono',ui-monospace,Menlo,Consolas,monospace;
 }
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
-  --bg:#08162b; --surface:#0f2340; --surface2:#16305a; --ink:#e8f0fb; --muted:#9db3cf; --line:#24406b;
-  --court:#5aa2ff; --court-ink:#04152e; --court-soft:#16335f; --ball:#d9f23a; --ball-ink:#1f2a00; --bad:#ef8b78;
-  --navy:#0a2658; --navy2:#071a3c; --board:#050f20; --mesh:rgba(232,240,251,.22); color-scheme:dark}}
+  --bg:#141c1b; --surface:#1b2625; --surface2:#243331; --ink:#e7eeeb; --muted:#a2b2ae; --line:#2f403d;
+  --court:#7cc3a6; --court-ink:#0d1f1a; --court-soft:#21403a; --ball:#e6df82; --ball-ink:#2b2800; --bad:#ee9482; color-scheme:dark}}
 :root[data-theme="dark"]{
-  --bg:#08162b; --surface:#0f2340; --surface2:#16305a; --ink:#e8f0fb; --muted:#9db3cf; --line:#24406b;
-  --court:#5aa2ff; --court-ink:#04152e; --court-soft:#16335f; --ball:#d9f23a; --ball-ink:#1f2a00; --bad:#ef8b78;
-  --navy:#0a2658; --navy2:#071a3c; --board:#050f20; --mesh:rgba(232,240,251,.22); color-scheme:dark}
+  --bg:#141c1b; --surface:#1b2625; --surface2:#243331; --ink:#e7eeeb; --muted:#a2b2ae; --line:#2f403d;
+  --court:#7cc3a6; --court-ink:#0d1f1a; --court-soft:#21403a; --ball:#e6df82; --ball-ink:#2b2800; --bad:#ee9482; color-scheme:dark}
 *{box-sizing:border-box}
-body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.45}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.5}
 h1,h2,h3{font-family:var(--display);margin:0;line-height:1.15;text-wrap:balance}
-h2{font-size:1.7rem;font-weight:700;font-style:italic;letter-spacing:.01em}
-h3{font-size:1.25rem;font-weight:700}
+h2{font-size:1.6rem;font-weight:700;letter-spacing:.01em}
+h3{font-size:1.2rem;font-weight:700}
 button,input,select,textarea{font:inherit;color:inherit}
 .bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--surface);border-bottom:1px solid var(--line);padding-inline:16px}
 .bar-in{max-width:1100px;margin:0 auto;display:flex;align-items:center;gap:1rem;flex-wrap:wrap;padding-block:.6rem}
@@ -166,76 +163,47 @@ input[type=time]{background:var(--bg);border:1px solid var(--line);border-radius
 .bar-in .sync{max-width:100%;white-space:normal}
 
 
-/* ---------- Pickleball theme layer ---------- */
-/* Top bar: navy court with white court lines, optic-yellow tape line and a net-mesh edge */
-.bar{background:
-  linear-gradient(90deg,transparent calc(8% - 1px),rgba(255,255,255,.16) calc(8% - 1px) calc(8% + 1px),transparent calc(8% + 1px) calc(92% - 1px),rgba(255,255,255,.16) calc(92% - 1px) calc(92% + 1px),transparent calc(92% + 1px)),
-  linear-gradient(0deg,transparent calc(30% - 1px),rgba(255,255,255,.14) calc(30% - 1px) calc(30% + 1px),transparent calc(30% + 1px)),
-  linear-gradient(180deg,var(--navy),var(--navy2));
-  color:#fff;border-bottom:3px solid var(--ball);margin-bottom:9px}
-.bar::after{content:"";position:absolute;left:0;right:0;top:100%;height:9px;pointer-events:none;
-  background:linear-gradient(var(--ball) 0 0) top/100% 0 no-repeat,
-    repeating-linear-gradient(90deg,var(--mesh) 0 1px,transparent 1px 7px),
-    repeating-linear-gradient(0deg,var(--mesh) 0 1px,transparent 1px 3px);
-  -webkit-mask:linear-gradient(#000,transparent);mask:linear-gradient(#000,transparent)}
-.brand{font-size:1.65rem;font-style:italic;letter-spacing:.01em;color:#fff;gap:.7rem}
-.brand small{display:block;font-family:var(--body);font-style:normal;font-weight:500;font-size:.72rem;letter-spacing:.02em;color:rgba(255,255,255,.7);margin-top:-.15rem}
+/* ---------- Soft pickleball theme layer ---------- */
+/* Light top bar with a court-green stripe and faint white-on-green court lines */
+.bar{border-top:4px solid var(--court)}
+.brand{font-family:var(--display);font-size:1.7rem;font-weight:700;letter-spacing:.01em;gap:.7rem}
 .bt{display:flex;flex-direction:column;line-height:1.05}
-.ball{width:2rem;height:2rem;box-shadow:inset 0 0 0 1.5px rgba(0,0,0,.22),0 2px 6px rgba(0,0,0,.35);background:radial-gradient(circle at 32% 30%,#f1ff8a,var(--ball) 62%)}
-.ball::after{background:radial-gradient(circle,rgba(0,0,0,.34) 0 1.6px,transparent 2px) 0 0/7px 7px;opacity:.6}
-.bar .sync{color:rgba(255,255,255,.85);border-color:rgba(255,255,255,.3)}
-.bar .btn{background:rgba(255,255,255,.12);border-color:rgba(255,255,255,.28);color:#fff}
-.bar .btn:hover:not(:disabled){border-color:var(--ball)}
-.bar .btn.primary{background:var(--ball);border-color:var(--ball);color:var(--ball-ink)}
-.bar .tab{color:rgba(255,255,255,.78);font-family:var(--display);font-size:1.15rem;font-weight:700;letter-spacing:.02em;padding:.3rem .9rem;border-radius:.4rem;transform:skewX(-8deg)}
-.bar .tab:hover{color:#fff}
-.bar .tab[aria-current="page"]{background:var(--ball);color:var(--ball-ink)}
-.bar .cnt{background:rgba(255,255,255,.18);color:#fff;font-family:var(--body);font-size:.72rem}
-.bar .tab[aria-current="page"] .cnt{background:rgba(31,42,0,.16);color:var(--ball-ink)}
-.bar input:focus-visible,.bar button:focus-visible{outline-color:var(--ball)}
+.brand small{font-family:var(--body);font-weight:500;font-size:.78rem;color:var(--muted);margin-top:.1rem}
+.ball{width:2rem;height:2rem;background:radial-gradient(circle at 32% 30%,#f4efa6,var(--ball) 62%);box-shadow:inset 0 0 0 1.5px rgba(0,0,0,.14)}
+.ball::after{opacity:.35}
+.tab{font-size:1rem;color:var(--muted)}
+.tab:hover{color:var(--ink);background:var(--surface2)}
+.tab[aria-current="page"]{background:var(--court);color:var(--court-ink)}
+.tab[aria-current="page"] .cnt{background:rgba(255,255,255,.22);color:var(--court-ink)}
+.bar input:focus-visible,.bar button:focus-visible{outline-color:var(--court)}
 
-/* Type: condensed italic for headings and labels, sentence case */
-.field>label,.lbl,.coltitle{font-family:var(--display);text-transform:none;letter-spacing:.02em;font-size:1rem;font-weight:600}
-.coltitle{color:var(--ink);font-size:1.1rem;font-weight:700}
-th{font-family:var(--display);text-transform:none;letter-spacing:.02em;font-size:1rem;font-weight:600}
-.btn{font-family:var(--display);font-size:1.05rem;font-weight:700;letter-spacing:.02em;border-radius:.4rem}
-.btn.small{font-size:.95rem}
-.pill{font-family:var(--display);font-size:.95rem;font-weight:600}
-.tag{font-family:var(--display);font-size:.85rem}
-.team .tname{font-size:1.3rem}
-.segb b{font-size:1.3rem}
-.ticker{font-style:italic;font-size:2rem}
+/* Labels and table heads: plain sentence case, readable size */
+.field>label,.lbl,.coltitle,th{text-transform:none;letter-spacing:0;font-size:.9rem;font-weight:600}
+.coltitle{color:var(--ink);font-size:1rem}
+.btn{font-weight:600;border-radius:.45rem}
+.team .tname,.segb b{font-family:var(--display);font-size:1.25rem}
+.ticker{font-size:2rem}
 
-/* Cards: slightly squarer, with a court-line top edge on the main cards */
-.card{border-radius:.55rem;border-top:3px solid var(--court)}
-.team,.match,.segb,.cg,.vtog,.notice{border-radius:.45rem}
+/* Cards */
+.card{border-radius:.6rem}
+.team,.match,.segb,.cg,.vtog,.notice{border-radius:.5rem}
 .notice{border-left:4px solid var(--court)}
 
-/* Match cards read like a scoreboard */
-.match.ready{border-color:var(--line);box-shadow:none;border-left:5px solid var(--ball)}
+/* Matches and scores: clear, quiet, with a court-green marker on matches ready to play */
+.match.ready{border-color:var(--line);box-shadow:none;border-left:4px solid var(--court)}
 .slot.won{background:var(--court-soft)}
 .slot.won .en::after{color:var(--court)}
-input.sc{background:var(--board);color:var(--ball);border:1px solid var(--board);border-radius:.3rem;font-family:var(--display);font-size:1.3rem;font-weight:700;width:3.4rem;padding:.1rem}
-input.sc:focus-visible{outline:2px solid var(--ball);outline-offset:1px}
-input.sc::selection{background:var(--ball);color:var(--ball-ink)}
-.mno{font-family:var(--display);font-size:.85rem;font-weight:600;left:.5rem;right:auto;top:.1rem}
-.match>.slot:first-of-type{padding-top:.8rem}
-.mn{font-family:var(--display);font-size:1rem;font-weight:600}
+input.sc{background:var(--surface);color:var(--ink);border:1px solid var(--line);border-radius:.4rem;font-family:var(--display);font-size:1.25rem;font-weight:700;width:3.2rem;padding:.1rem}
+input.sc:focus-visible{outline:2px solid var(--court);outline-offset:1px}
+.slot.won input.sc{border-color:var(--court);box-shadow:0 0 0 1px var(--court)}
+.mno{font-size:.7rem;left:.5rem;right:auto;top:.1rem}
+.match>.slot:first-of-type{padding-top:.85rem}
 .slot .en{font-size:1.02rem}
-.ro input.sc:disabled{background:var(--board);color:var(--ball);-webkit-text-fill-color:var(--ball)}
 
 /* Champion */
-.champ{background:var(--ball) radial-gradient(circle,rgba(0,0,0,.14) 0 2px,transparent 2.6px) 0 0/16px 16px;border-radius:.55rem;border:2px solid rgba(0,0,0,.18)}
-.champ b{font-style:italic;font-size:2.4rem;line-height:1.05}
-.champ .lbl{font-weight:700;font-size:1.1rem}
+.champ{background:var(--ball) radial-gradient(circle,rgba(0,0,0,.07) 0 2px,transparent 2.6px) 0 0/16px 16px;border-radius:.6rem}
+.champ b{font-size:2.3rem;line-height:1.05}
 
-/* Court schedule: courts get a blue court-line header */
+/* Court schedule */
 .cg-h{border-top:3px solid var(--court)}
-.cg-h .cn{font-family:var(--display);font-size:1.1rem;font-weight:700}
-.cg-c.now{background:color-mix(in srgb,var(--ball) 28%,var(--surface))}
-
-/* Progress bar looks like a rally line */
-.prog{height:.6rem}
-.prog>span{background:linear-gradient(90deg,var(--court),var(--ball))}
-
-@media (max-width:520px){.brand{font-size:1.4rem}.bar .tab{transform:none}}
+.cg-c.now{background:color-mix(in srgb,var(--ball) 35%,var(--surface))}
