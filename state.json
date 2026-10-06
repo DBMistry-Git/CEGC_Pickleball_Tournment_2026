@@ -1,6 +1,6 @@
 {
- "rev": 20,
- "at": "2026-10-06T06:43:28.748Z",
+ "rev": 21,
+ "at": "2026-10-06T06:44:14.629Z",
  "S": {
   "name": "CEGC Pickleball Tournament 2026",
   "teamSize": 2,
@@ -289,14 +289,14 @@
   "scheme": "names",
   "E": {
    "doubles": {
-    "format": "swiss",
+    "format": "single",
     "seeding": "random",
     "swissRounds": 3,
     "qual": 4,
     "second": true,
     "t": {
      "name": "CEGC Pickleball Tournament 2026 · Doubles",
-     "format": "swiss",
+     "format": "single",
      "mode": "teams",
      "entrants": [
       {
@@ -313,30 +313,43 @@
        "skill": 2.5
       },
       {
-       "id": "t15",
-       "name": "Rahman and Hossain",
+       "id": "t45",
+       "name": "Alan & John",
        "memberIds": [
-        "p13",
-        "p14"
+        "p28",
+        "p39"
        ],
        "members": [
-        "Md Majidur Rahman",
-        "Md Imam Hossain"
-       ],
-       "skill": 2
-      },
-      {
-       "id": "t3",
-       "name": "Ryan and Kevin",
-       "memberIds": [
-        "p1",
-        "p2"
-       ],
-       "members": [
-        "Ryan Burrows",
-        "Kevin Donnelly"
+        "Alan Weible",
+        "John Clay"
        ],
        "skill": 2.5
+      },
+      {
+       "id": "t41",
+       "name": "Aleah & Allison",
+       "memberIds": [
+        "p20",
+        "p22"
+       ],
+       "members": [
+        "Aleah Treiterer",
+        "Allison Korpi"
+       ],
+       "skill": 2.5
+      },
+      {
+       "id": "t6",
+       "name": "Hitarth and Ajeet",
+       "memberIds": [
+        "p4",
+        "p5"
+       ],
+       "members": [
+        "Hitarth Thakkar",
+        "Ajeet Singh"
+       ],
+       "skill": 2
       },
       {
        "id": "t18",
@@ -365,58 +378,6 @@
        "skill": 1.5
       },
       {
-       "id": "t45",
-       "name": "Alan & John",
-       "memberIds": [
-        "p28",
-        "p39"
-       ],
-       "members": [
-        "Alan Weible",
-        "John Clay"
-       ],
-       "skill": 2.5
-      },
-      {
-       "id": "t6",
-       "name": "Hitarth and Ajeet",
-       "memberIds": [
-        "p4",
-        "p5"
-       ],
-       "members": [
-        "Hitarth Thakkar",
-        "Ajeet Singh"
-       ],
-       "skill": 2
-      },
-      {
-       "id": "t46",
-       "name": "Isaac & Trace",
-       "memberIds": [
-        "p19",
-        "p24"
-       ],
-       "members": [
-        "Isaac Doughan",
-        "Trace Pearce"
-       ],
-       "skill": 2.5
-      },
-      {
-       "id": "t31",
-       "name": "Krutarth and Anant",
-       "memberIds": [
-        "p26",
-        "p27"
-       ],
-       "members": [
-        "Krutarth Pandit",
-        "Anant Sohale"
-       ],
-       "skill": 1.5
-      },
-      {
        "id": "t9",
        "name": "Masum and Hasan",
        "memberIds": [
@@ -426,6 +387,45 @@
        "members": [
         "Mahmud Hussain Masum",
         "Abdulla Hasan"
+       ],
+       "skill": 2.5
+      },
+      {
+       "id": "t15",
+       "name": "Rahman and Hossain",
+       "memberIds": [
+        "p13",
+        "p14"
+       ],
+       "members": [
+        "Md Majidur Rahman",
+        "Md Imam Hossain"
+       ],
+       "skill": 2
+      },
+      {
+       "id": "t32",
+       "name": "Vincent and Chandni",
+       "memberIds": [
+        "p23",
+        "p30"
+       ],
+       "members": [
+        "Vincent Copeland",
+        "Chandni Bhat"
+       ],
+       "skill": 2.5
+      },
+      {
+       "id": "t3",
+       "name": "Ryan and Kevin",
+       "memberIds": [
+        "p1",
+        "p2"
+       ],
+       "members": [
+        "Ryan Burrows",
+        "Kevin Donnelly"
        ],
        "skill": 2.5
       },
@@ -443,50 +443,49 @@
        "skill": 1.5
       },
       {
-       "id": "t32",
-       "name": "Vincent and Chandni",
+       "id": "t31",
+       "name": "Krutarth and Anant",
        "memberIds": [
-        "p23",
-        "p30"
+        "p26",
+        "p27"
        ],
        "members": [
-        "Vincent Copeland",
-        "Chandni Bhat"
+        "Krutarth Pandit",
+        "Anant Sohale"
        ],
-       "skill": 2.5
+       "skill": 1.5
       },
       {
-       "id": "t41",
-       "name": "Aleah & Allison",
+       "id": "t46",
+       "name": "Isaac & Trace",
        "memberIds": [
-        "p20",
-        "p22"
+        "p19",
+        "p24"
        ],
        "members": [
-        "Aleah Treiterer",
-        "Allison Korpi"
+        "Isaac Doughan",
+        "Trace Pearce"
        ],
        "skill": 2.5
       }
      ],
      "matches": [
       {
-       "id": "S1-1",
-       "br": "S",
+       "id": "W1-1",
+       "br": "W",
        "r": 1,
        "a": {
         "t": "e",
         "id": "t44"
        },
        "b": {
-        "t": "e",
-        "id": "t6"
+        "t": "b"
        },
        "n": 1
       },
       {
-       "id": "S1-2",
-       "br": "S",
+       "id": "W1-2",
+       "br": "W",
        "r": 1,
        "a": {
         "t": "e",
@@ -494,27 +493,27 @@
        },
        "b": {
         "t": "e",
-        "id": "t46"
+        "id": "t32"
        },
        "n": 2
       },
       {
-       "id": "S1-3",
-       "br": "S",
+       "id": "W1-3",
+       "br": "W",
        "r": 1,
        "a": {
         "t": "e",
-        "id": "t3"
+        "id": "t6"
        },
        "b": {
         "t": "e",
-        "id": "t31"
+        "id": "t46"
        },
        "n": 3
       },
       {
-       "id": "S1-4",
-       "br": "S",
+       "id": "W1-4",
+       "br": "W",
        "r": 1,
        "a": {
         "t": "e",
@@ -522,41 +521,40 @@
        },
        "b": {
         "t": "e",
-        "id": "t9"
+        "id": "t31"
        },
        "n": 4
       },
       {
-       "id": "S1-5",
-       "br": "S",
-       "r": 1,
-       "a": {
-        "t": "e",
-        "id": "t42"
-       },
-       "b": {
-        "t": "e",
-        "id": "t12"
-       },
-       "n": 5
-      },
-      {
-       "id": "S1-6",
-       "br": "S",
+       "id": "W1-5",
+       "br": "W",
        "r": 1,
        "a": {
         "t": "e",
         "id": "t45"
        },
        "b": {
+        "t": "b"
+       },
+       "n": 5
+      },
+      {
+       "id": "W1-6",
+       "br": "W",
+       "r": 1,
+       "a": {
         "t": "e",
-        "id": "t32"
+        "id": "t9"
+       },
+       "b": {
+        "t": "e",
+        "id": "t3"
        },
        "n": 6
       },
       {
-       "id": "S1-7",
-       "br": "S",
+       "id": "W1-7",
+       "br": "W",
        "r": 1,
        "a": {
         "t": "e",
@@ -566,20 +564,166 @@
         "t": "b"
        },
        "n": 7
+      },
+      {
+       "id": "W1-8",
+       "br": "W",
+       "r": 1,
+       "a": {
+        "t": "e",
+        "id": "t42"
+       },
+       "b": {
+        "t": "e",
+        "id": "t12"
+       },
+       "n": 8
+      },
+      {
+       "id": "P1",
+       "br": "W",
+       "r": 1.5,
+       "a": {
+        "t": "w",
+        "m": "W1-7"
+       },
+       "b": {
+        "t": "l",
+        "m": "W1-2"
+       },
+       "n": 9
+      },
+      {
+       "id": "P2",
+       "br": "W",
+       "r": 1.5,
+       "a": {
+        "t": "w",
+        "m": "W1-5"
+       },
+       "b": {
+        "t": "l",
+        "m": "W1-8"
+       },
+       "n": 10
+      },
+      {
+       "id": "P3",
+       "br": "W",
+       "r": 1.5,
+       "a": {
+        "t": "w",
+        "m": "W1-1"
+       },
+       "b": {
+        "t": "l",
+        "m": "W1-6"
+       },
+       "n": 11
+      },
+      {
+       "id": "W2-1",
+       "br": "W",
+       "r": 2,
+       "a": {
+        "t": "w",
+        "m": "P3"
+       },
+       "b": {
+        "t": "w",
+        "m": "W1-2"
+       },
+       "n": 12
+      },
+      {
+       "id": "W2-2",
+       "br": "W",
+       "r": 2,
+       "a": {
+        "t": "w",
+        "m": "W1-3"
+       },
+       "b": {
+        "t": "w",
+        "m": "W1-4"
+       },
+       "n": 13
+      },
+      {
+       "id": "W2-3",
+       "br": "W",
+       "r": 2,
+       "a": {
+        "t": "w",
+        "m": "P2"
+       },
+       "b": {
+        "t": "w",
+        "m": "W1-6"
+       },
+       "n": 14
+      },
+      {
+       "id": "W2-4",
+       "br": "W",
+       "r": 2,
+       "a": {
+        "t": "w",
+        "m": "P1"
+       },
+       "b": {
+        "t": "w",
+        "m": "W1-8"
+       },
+       "n": 15
+      },
+      {
+       "id": "W3-1",
+       "br": "W",
+       "r": 3,
+       "a": {
+        "t": "w",
+        "m": "W2-1"
+       },
+       "b": {
+        "t": "w",
+        "m": "W2-2"
+       },
+       "n": 16
+      },
+      {
+       "id": "W3-2",
+       "br": "W",
+       "r": 3,
+       "a": {
+        "t": "w",
+        "m": "W2-3"
+       },
+       "b": {
+        "t": "w",
+        "m": "W2-4"
+       },
+       "n": 17
+      },
+      {
+       "id": "W4-1",
+       "br": "W",
+       "r": 4,
+       "a": {
+        "t": "w",
+        "m": "W3-1"
+       },
+       "b": {
+        "t": "w",
+        "m": "W3-2"
+       },
+       "n": 18
       }
      ],
-     "results": {
-      "S1-1": {
-       "sig": "t44|t6",
-       "sa": null,
-       "sb": null
-      }
-     },
+     "results": {},
      "second": true,
      "po": null,
-     "qual": 4,
-     "swissRounds": 3,
-     "round": 1
+     "qual": 0
     }
    },
    "singles": {
@@ -824,78 +968,7 @@
    "start": "16:30",
    "len": 20,
    "rest": true,
-   "slots": [
-    {
-     "items": [
-      {
-       "ev": "doubles",
-       "id": "S1-1",
-       "court": 1,
-       "players": [
-        "p40",
-        "p21",
-        "p4",
-        "p5"
-       ]
-      },
-      {
-       "ev": "doubles",
-       "id": "S1-2",
-       "court": 2,
-       "players": [
-        "p13",
-        "p14",
-        "p19",
-        "p24"
-       ]
-      },
-      {
-       "ev": "doubles",
-       "id": "S1-3",
-       "court": 3,
-       "players": [
-        "p1",
-        "p2",
-        "p26",
-        "p27"
-       ]
-      },
-      {
-       "ev": "doubles",
-       "id": "S1-4",
-       "court": 4,
-       "players": [
-        "p16",
-        "p17",
-        "p7",
-        "p8"
-       ]
-      },
-      {
-       "ev": "doubles",
-       "id": "S1-5",
-       "court": 5,
-       "players": [
-        "p38",
-        "p29",
-        "p10",
-        "p11"
-       ]
-      },
-      {
-       "ev": "doubles",
-       "id": "S1-6",
-       "court": 6,
-       "players": [
-        "p28",
-        "p39",
-        "p23",
-        "p30"
-       ]
-      }
-     ]
-    }
-   ],
+   "slots": [],
    "off": []
   },
   "uid": 47,
