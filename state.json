@@ -1,0 +1,594 @@
+{
+ "rev": 17,
+ "at": "2026-10-05T19:09:20.497Z",
+ "S": {
+  "name": "CEGC Pickleball Tournament 2026",
+  "teamSize": 2,
+  "players": [
+   {
+    "id": "p1",
+    "name": "Ryan Burrows",
+    "skill": 3,
+    "singles": false
+   },
+   {
+    "id": "p2",
+    "name": "Kevin Donnelly",
+    "skill": 2,
+    "singles": false
+   },
+   {
+    "id": "p4",
+    "name": "Hitarth Thakkar",
+    "skill": 2,
+    "singles": false
+   },
+   {
+    "id": "p5",
+    "name": "Ajeet Singh",
+    "skill": 2,
+    "singles": false
+   },
+   {
+    "id": "p7",
+    "name": "Mahmud Hussain Masum",
+    "skill": 3
+   },
+   {
+    "id": "p8",
+    "name": "Abdulla Hasan",
+    "skill": 2
+   },
+   {
+    "id": "p10",
+    "name": "Shekhar Shinde",
+    "skill": 1
+   },
+   {
+    "id": "p11",
+    "name": "Tanay Jawdekar",
+    "skill": 2
+   },
+   {
+    "id": "p13",
+    "name": "Md Majidur Rahman",
+    "skill": 2
+   },
+   {
+    "id": "p14",
+    "name": "Md Imam Hossain",
+    "skill": 2
+   },
+   {
+    "id": "p16",
+    "name": "Virginia Lopez",
+    "skill": 2
+   },
+   {
+    "id": "p17",
+    "name": "Ana Carolina Silva Barbeta",
+    "skill": 2
+   },
+   {
+    "id": "p19",
+    "name": "Isaac Doughan",
+    "skill": 2
+   },
+   {
+    "id": "p20",
+    "name": "Aleah Treiterer",
+    "skill": 2
+   },
+   {
+    "id": "p21",
+    "name": "Abby Mapili",
+    "skill": 3
+   },
+   {
+    "id": "p22",
+    "name": "Allison Korpi",
+    "skill": 3
+   },
+   {
+    "id": "p23",
+    "name": "Vincent Copeland",
+    "skill": 3
+   },
+   {
+    "id": "p24",
+    "name": "Trace Pearce",
+    "skill": 3
+   },
+   {
+    "id": "p25",
+    "name": "Satchit Nagpal",
+    "skill": 3
+   },
+   {
+    "id": "p26",
+    "name": "Krutarth Pandit",
+    "skill": 1,
+    "singles": false
+   },
+   {
+    "id": "p27",
+    "name": "Anant Sohale",
+    "skill": 2
+   },
+   {
+    "id": "p28",
+    "name": "Alan Weible",
+    "skill": 2
+   },
+   {
+    "id": "p29",
+    "name": "Sadie Jarrell",
+    "skill": 2,
+    "singles": false
+   },
+   {
+    "id": "p30",
+    "name": "Chandni Bhat",
+    "skill": 2
+   }
+  ],
+  "teams": [
+   {
+    "id": "t3",
+    "members": [
+     "p1",
+     "p2"
+    ],
+    "custom": "Ryan and Kevin"
+   },
+   {
+    "id": "t6",
+    "members": [
+     "p4",
+     "p5"
+    ],
+    "custom": "Hitarth and Ajeet"
+   },
+   {
+    "id": "t9",
+    "members": [
+     "p7",
+     "p8"
+    ],
+    "custom": "Masum and Hasan"
+   },
+   {
+    "id": "t12",
+    "members": [
+     "p10",
+     "p11"
+    ],
+    "custom": "Shekhar and Tanay"
+   },
+   {
+    "id": "t15",
+    "members": [
+     "p13",
+     "p14"
+    ],
+    "custom": "Rahman and Hossain"
+   },
+   {
+    "id": "t18",
+    "members": [
+     "p16",
+     "p17"
+    ],
+    "custom": "Virginia and Carol"
+   },
+   {
+    "id": "t31",
+    "members": [
+     "p26",
+     "p27"
+    ],
+    "custom": "Krutarth and Sohale"
+   },
+   {
+    "id": "t32",
+    "members": [
+     "p23",
+     "p30"
+    ],
+    "custom": "Vincent and Chandni"
+   },
+   {
+    "id": "t33",
+    "members": [
+     "p19",
+     "p24"
+    ],
+    "custom": "Isaac and Trace"
+   },
+   {
+    "id": "t34",
+    "members": [
+     "p20",
+     "p25"
+    ],
+    "custom": "Aleah and Satchit"
+   },
+   {
+    "id": "t35",
+    "members": [
+     "p28",
+     "p21"
+    ],
+    "custom": "Alan and Abby"
+   },
+   {
+    "id": "t36",
+    "members": [
+     "p29",
+     "p22"
+    ],
+    "custom": "Sadie and Allison"
+   }
+  ],
+  "apart": [
+   [
+    "p21",
+    "p20"
+   ]
+  ],
+  "scheme": "names",
+  "E": {
+   "doubles": {
+    "format": "swiss",
+    "seeding": "random",
+    "swissRounds": 3,
+    "qual": 4,
+    "second": true,
+    "t": {
+     "name": "CEGC Pickleball Tournament 2026 \u00b7 Doubles",
+     "format": "swiss",
+     "mode": "teams",
+     "entrants": [
+      {
+       "id": "t18",
+       "name": "Virginia and Carol",
+       "memberIds": [
+        "p16",
+        "p17"
+       ],
+       "members": [
+        "Virginia Lopez",
+        "Ana Carolina Silva Barbeta"
+       ],
+       "skill": 2
+      },
+      {
+       "id": "t15",
+       "name": "Rahman and Hossain",
+       "memberIds": [
+        "p13",
+        "p14"
+       ],
+       "members": [
+        "Md Majidur Rahman",
+        "Md Imam Hossain"
+       ],
+       "skill": 2
+      },
+      {
+       "id": "t32",
+       "name": "Vincent and Chandni",
+       "memberIds": [
+        "p23",
+        "p30"
+       ],
+       "members": [
+        "Vincent Copeland",
+        "Chandni Bhat"
+       ],
+       "skill": 2.5
+      },
+      {
+       "id": "t36",
+       "name": "Sadie and Allison",
+       "memberIds": [
+        "p29",
+        "p22"
+       ],
+       "members": [
+        "Sadie Jarrell",
+        "Allison Korpi"
+       ],
+       "skill": 2.5
+      },
+      {
+       "id": "t34",
+       "name": "Aleah and Satchit",
+       "memberIds": [
+        "p20",
+        "p25"
+       ],
+       "members": [
+        "Aleah Treiterer",
+        "Satchit Nagpal"
+       ],
+       "skill": 2.5
+      },
+      {
+       "id": "t3",
+       "name": "Ryan and Kevin",
+       "memberIds": [
+        "p1",
+        "p2"
+       ],
+       "members": [
+        "Ryan Burrows",
+        "Kevin Donnelly"
+       ],
+       "skill": 2.5
+      },
+      {
+       "id": "t33",
+       "name": "Isaac and Trace",
+       "memberIds": [
+        "p19",
+        "p24"
+       ],
+       "members": [
+        "Isaac Doughan",
+        "Trace Pearce"
+       ],
+       "skill": 2.5
+      },
+      {
+       "id": "t31",
+       "name": "Krutarth and Sohale",
+       "memberIds": [
+        "p26",
+        "p27"
+       ],
+       "members": [
+        "Krutarth Pandit",
+        "Anant Sohale"
+       ],
+       "skill": 1.5
+      },
+      {
+       "id": "t35",
+       "name": "Alan and Abby",
+       "memberIds": [
+        "p28",
+        "p21"
+       ],
+       "members": [
+        "Alan Weible",
+        "Abby Mapili"
+       ],
+       "skill": 2.5
+      },
+      {
+       "id": "t6",
+       "name": "Hitarth and Ajeet",
+       "memberIds": [
+        "p4",
+        "p5"
+       ],
+       "members": [
+        "Hitarth Thakkar",
+        "Ajeet Singh"
+       ],
+       "skill": 2
+      },
+      {
+       "id": "t12",
+       "name": "Shekhar and Tanay",
+       "memberIds": [
+        "p10",
+        "p11"
+       ],
+       "members": [
+        "Shekhar Shinde",
+        "Tanay Jawdekar"
+       ],
+       "skill": 1.5
+      },
+      {
+       "id": "t9",
+       "name": "Masum and Hasan",
+       "memberIds": [
+        "p7",
+        "p8"
+       ],
+       "members": [
+        "Mahmud Hussain Masum",
+        "Abdulla Hasan"
+       ],
+       "skill": 2.5
+      }
+     ],
+     "matches": [
+      {
+       "id": "S1-1",
+       "br": "S",
+       "r": 1,
+       "a": {
+        "t": "e",
+        "id": "t18"
+       },
+       "b": {
+        "t": "e",
+        "id": "t33"
+       },
+       "n": 1
+      },
+      {
+       "id": "S1-2",
+       "br": "S",
+       "r": 1,
+       "a": {
+        "t": "e",
+        "id": "t15"
+       },
+       "b": {
+        "t": "e",
+        "id": "t31"
+       },
+       "n": 2
+      },
+      {
+       "id": "S1-3",
+       "br": "S",
+       "r": 1,
+       "a": {
+        "t": "e",
+        "id": "t32"
+       },
+       "b": {
+        "t": "e",
+        "id": "t35"
+       },
+       "n": 3
+      },
+      {
+       "id": "S1-4",
+       "br": "S",
+       "r": 1,
+       "a": {
+        "t": "e",
+        "id": "t36"
+       },
+       "b": {
+        "t": "e",
+        "id": "t6"
+       },
+       "n": 4
+      },
+      {
+       "id": "S1-5",
+       "br": "S",
+       "r": 1,
+       "a": {
+        "t": "e",
+        "id": "t34"
+       },
+       "b": {
+        "t": "e",
+        "id": "t12"
+       },
+       "n": 5
+      },
+      {
+       "id": "S1-6",
+       "br": "S",
+       "r": 1,
+       "a": {
+        "t": "e",
+        "id": "t3"
+       },
+       "b": {
+        "t": "e",
+        "id": "t9"
+       },
+       "n": 6
+      }
+     ],
+     "results": {},
+     "second": true,
+     "po": null,
+     "qual": 4,
+     "swissRounds": 3,
+     "round": 1
+    }
+   },
+   "singles": {
+    "format": "swiss",
+    "seeding": "random",
+    "swissRounds": 3,
+    "qual": 4,
+    "second": true,
+    "t": null
+   }
+  },
+  "sched": {
+   "courts": 8,
+   "start": "16:30",
+   "len": 20,
+   "rest": false,
+   "slots": [
+    {
+     "items": [
+      {
+       "ev": "doubles",
+       "id": "S1-1",
+       "court": 1,
+       "players": [
+        "p16",
+        "p17",
+        "p19",
+        "p24"
+       ]
+      },
+      {
+       "ev": "doubles",
+       "id": "S1-2",
+       "court": 2,
+       "players": [
+        "p13",
+        "p14",
+        "p26",
+        "p27"
+       ]
+      },
+      {
+       "ev": "doubles",
+       "id": "S1-3",
+       "court": 3,
+       "players": [
+        "p23",
+        "p30",
+        "p28",
+        "p21"
+       ]
+      },
+      {
+       "ev": "doubles",
+       "id": "S1-4",
+       "court": 4,
+       "players": [
+        "p29",
+        "p22",
+        "p4",
+        "p5"
+       ]
+      },
+      {
+       "ev": "doubles",
+       "id": "S1-5",
+       "court": 5,
+       "players": [
+        "p20",
+        "p25",
+        "p10",
+        "p11"
+       ]
+      },
+      {
+       "ev": "doubles",
+       "id": "S1-6",
+       "court": 6,
+       "players": [
+        "p1",
+        "p2",
+        "p7",
+        "p8"
+       ]
+      }
+     ]
+    }
+   ],
+   "off": []
+  },
+  "uid": 37,
+  "sample": false
+ }
+}
