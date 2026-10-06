@@ -50,7 +50,7 @@ function syncText(){
 function paintSync(){
   const el=document.getElementById('sync');if(el)el.textContent=syncText();
   const t=document.getElementById('tools');
-  if(t)t.innerHTML=RO?'':`<button class="btn small primary" data-act="dl">Download state.json</button><button class="btn small" data-act="discard">Discard draft</button>`;
+  if(t)t.innerHTML=RO?'':`<button class="btn small primary" data-act="pub"${pubBusy?' disabled':''}>${pubBusy?'Publishing…':'Publish to site'}</button><button class="btn small" data-act="dl">Download state.json</button><button class="btn small" data-act="discard">Discard draft</button><button class="btn small" data-act="tok">${ghToken()?'Forget token':'Set token'}</button>`;
 }
 function downloadState(){
   const rev=Math.max(META.rev||0,PUB?PUB.rev||0:0)+1;
@@ -60,6 +60,65 @@ function downloadState(){
   a.download='state.json';document.body.appendChild(a);a.click();a.remove();
   setTimeout(()=>URL.revokeObjectURL(a.href),2000);
   note('Downloaded state.json. Replace the file in the repo, then commit and push to publish.');
+}
+/* ----- one-click publish: writes state.json to the repo through the GitHub API -----
+   Needs a fine-grained token (Contents: read and write on this one repo). It is kept only in this
+   browser's localStorage and is sent only to api.github.com. */
+const TKEY='courtside-gh-token-v1',RKEY='courtside-gh-repo-v1';
+let pubBusy=false;
+function ghToken(){try{return localStorage.getItem(TKEY)||''}catch(e){return ''}}
+function ghRepo(){
+  const m=location.hostname.match(/^([^.]+)\.github\.io$/i),seg=location.pathname.split('/')[1];
+  if(m&&seg)return m[1]+'/'+decodeURIComponent(seg);
+  try{return localStorage.getItem(RKEY)||''}catch(e){return ''}
+}
+function setToken(){
+  if(ghToken()){
+    if(confirm('Remove the saved GitHub token from this browser?')){try{localStorage.removeItem(TKEY)}catch(e){}note('Token removed from this browser.')}
+    return;
+  }
+  const t=(prompt('Paste your GitHub token. It stays in this browser only.')||'').trim();
+  if(!t)return;
+  try{localStorage.setItem(TKEY,t);note('Token saved in this browser. Press Publish to site.')}catch(e){note('Could not save the token because browser storage is blocked.')}
+}
+function ghFail(status){
+  if(status===401)return 'Could not publish: GitHub rejected the token (wrong or expired). Use Forget token, then Set token.';
+  if(status===403||status===404)return 'Could not publish: no permission. The token needs Contents: Read and write on this repo, and the repo name must be right.';
+  if(status===409||status===422)return 'Could not publish: the file changed while publishing. Press Publish to site again.';
+  return 'Could not publish: GitHub answered with error '+status+'.';
+}
+async function publishState(){
+  if(pubBusy)return;
+  if(!ghToken()){setToken();render();return}
+  let repo=ghRepo();
+  if(!repo){
+    repo=(prompt('Repo to publish to, written as owner/name')||'').trim();
+    if(!/^[\w.-]+\/[\w.-]+$/.test(repo)){note('Need the repo written as owner/name.');render();return}
+    try{localStorage.setItem(RKEY,repo)}catch(e){}
+  }
+  pubBusy=true;note('Publishing…');render();
+  const api='https://api.github.com/repos/'+repo+'/contents/state.json';
+  const H={Authorization:'Bearer '+ghToken(),Accept:'application/vnd.github+json','X-GitHub-Api-Version':'2022-11-28'};
+  try{
+    let sha,remoteRev=0;
+    const g=await fetch(api+'?t='+Date.now(),{headers:H,cache:'no-store'});
+    if(g.ok){
+      const j=await g.json();sha=j.sha;
+      try{remoteRev=JSON.parse(decodeURIComponent(escape(atob(String(j.content||'').replace(/\s/g,''))))).rev||0}catch(e){}
+    }else if(g.status!==404){note(ghFail(g.status));return}
+    if(remoteRev>(META.rev||0)&&!confirm('The published version (rev '+remoteRev+') is newer than the one this draft started from (rev '+(META.rev||0)+'). Publish anyway and replace it?')){note('Publish cancelled.');return}
+    const rev=Math.max(META.rev||0,remoteRev)+1,st={rev,at:new Date().toISOString(),S:sharedState()};
+    const body={message:'Update tournament (rev '+rev+')',content:btoa(unescape(encodeURIComponent(JSON.stringify(st,null,1)+'\n')))};
+    if(sha)body.sha=sha;
+    const r=await fetch(api,{method:'PUT',headers:{...H,'Content-Type':'application/json'},body:JSON.stringify(body)});
+    if(!r.ok){note(ghFail(r.status));return}
+    PUB=st;META={rev,at:st.at};pubSig=JSON.stringify(sharedState());
+    note('Published rev '+rev+'. The public page updates in about a minute.');
+  }catch(e){
+    note('Could not publish: no connection to GitHub.');
+  }finally{
+    pubBusy=false;render();
+  }
 }
 function discardDraft(){
   if(!confirm('Discard this draft and go back to the published state.json?'))return;
@@ -504,6 +563,8 @@ function act(a,d){
     case 'fill':fillCell(+d.s,+d.c);break;
     case 'unitem':{const sl=S.sched.slots[+d.s];if(sl){sl.items=sl.items.filter(i=>i.court!==+d.c);if(!sl.items.length&&+d.s===S.sched.slots.length-1)S.sched.slots.pop()}msg='';break}
     case 'sv':SV=d.v==='time'?'time':'court';break;
+    case 'pub':publishState();return;
+    case 'tok':setToken();break;
     case 'dl':downloadState();break;
     case 'discard':discardDraft();break;
     case 'clearPlayers':S.players=[];S.teams=[];S.apart=[];S.sample=false;invalidate();break;
