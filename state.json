@@ -1,6 +1,6 @@
 {
- "rev": 23,
- "at": "2026-10-06T07:22:38.919Z",
+ "rev": 24,
+ "at": "2026-10-06T07:34:10.385Z",
  "S": {
   "name": "CEGC Pickleball Tournament 2026",
   "teamSize": 2,
@@ -300,58 +300,6 @@
      "mode": "teams",
      "entrants": [
       {
-       "id": "t6",
-       "name": "Hitarth and Ajeet",
-       "memberIds": [
-        "p4",
-        "p5"
-       ],
-       "members": [
-        "Hitarth Thakkar",
-        "Ajeet Singh"
-       ],
-       "skill": 2
-      },
-      {
-       "id": "t12",
-       "name": "Shekhar and Tanay",
-       "memberIds": [
-        "p10",
-        "p11"
-       ],
-       "members": [
-        "Shekhar Shinde",
-        "Tanay Jawdekar"
-       ],
-       "skill": 1.5
-      },
-      {
-       "id": "t44",
-       "name": "Christian & Abby",
-       "memberIds": [
-        "p40",
-        "p21"
-       ],
-       "members": [
-        "Christian Albers",
-        "Abby Mapili"
-       ],
-       "skill": 2.5
-      },
-      {
-       "id": "t42",
-       "name": "Adithya and Sadie",
-       "memberIds": [
-        "p38",
-        "p29"
-       ],
-       "members": [
-        "Adithya Tata",
-        "Sadie Jarrell"
-       ],
-       "skill": 1.5
-      },
-      {
        "id": "t9",
        "name": "Masum and Hasan",
        "memberIds": [
@@ -365,15 +313,15 @@
        "skill": 2.5
       },
       {
-       "id": "t32",
-       "name": "Vincent and Chandni",
+       "id": "t3",
+       "name": "Ryan and Kevin",
        "memberIds": [
-        "p23",
-        "p30"
+        "p1",
+        "p2"
        ],
        "members": [
-        "Vincent Copeland",
-        "Chandni Bhat"
+        "Ryan Burrows",
+        "Kevin Donnelly"
        ],
        "skill": 2.5
       },
@@ -391,28 +339,67 @@
        "skill": 1.5
       },
       {
-       "id": "t15",
-       "name": "Rahman and Hossain",
+       "id": "t32",
+       "name": "Vincent and Chandni",
        "memberIds": [
-        "p13",
-        "p14"
+        "p23",
+        "p30"
        ],
        "members": [
-        "Md Majidur Rahman",
-        "Md Imam Hossain"
+        "Vincent Copeland",
+        "Chandni Bhat"
+       ],
+       "skill": 2.5
+      },
+      {
+       "id": "t6",
+       "name": "Hitarth and Ajeet",
+       "memberIds": [
+        "p4",
+        "p5"
+       ],
+       "members": [
+        "Hitarth Thakkar",
+        "Ajeet Singh"
        ],
        "skill": 2
       },
       {
-       "id": "t3",
-       "name": "Ryan and Kevin",
+       "id": "t46",
+       "name": "Isaac & Trace",
        "memberIds": [
-        "p1",
-        "p2"
+        "p19",
+        "p24"
        ],
        "members": [
-        "Ryan Burrows",
-        "Kevin Donnelly"
+        "Isaac Doughan",
+        "Trace Pearce"
+       ],
+       "skill": 2.5
+      },
+      {
+       "id": "t41",
+       "name": "Aleah & Allison",
+       "memberIds": [
+        "p20",
+        "p22"
+       ],
+       "members": [
+        "Aleah Treiterer",
+        "Allison Korpi"
+       ],
+       "skill": 2.5
+      },
+      {
+       "id": "t44",
+       "name": "Christian & Abby",
+       "memberIds": [
+        "p40",
+        "p21"
+       ],
+       "members": [
+        "Christian Albers",
+        "Abby Mapili"
        ],
        "skill": 2.5
       },
@@ -430,17 +417,17 @@
        "skill": 2
       },
       {
-       "id": "t41",
-       "name": "Aleah & Allison",
+       "id": "t12",
+       "name": "Shekhar and Tanay",
        "memberIds": [
-        "p20",
-        "p22"
+        "p10",
+        "p11"
        ],
        "members": [
-        "Aleah Treiterer",
-        "Allison Korpi"
+        "Shekhar Shinde",
+        "Tanay Jawdekar"
        ],
-       "skill": 2.5
+       "skill": 1.5
       },
       {
        "id": "t45",
@@ -456,63 +443,34 @@
        "skill": 2.5
       },
       {
-       "id": "t46",
-       "name": "Isaac & Trace",
+       "id": "t42",
+       "name": "Adithya and Sadie",
        "memberIds": [
-        "p19",
-        "p24"
+        "p38",
+        "p29"
        ],
        "members": [
-        "Isaac Doughan",
-        "Trace Pearce"
+        "Adithya Tata",
+        "Sadie Jarrell"
        ],
-       "skill": 2.5
+       "skill": 1.5
+      },
+      {
+       "id": "t15",
+       "name": "Rahman and Hossain",
+       "memberIds": [
+        "p13",
+        "p14"
+       ],
+       "members": [
+        "Md Majidur Rahman",
+        "Md Imam Hossain"
+       ],
+       "skill": 2
       }
      ],
      "matches": [
       {
-       "id": "W1-1",
-       "br": "W",
-       "r": 1,
-       "a": {
-        "t": "e",
-        "id": "t6"
-       },
-       "b": {
-        "t": "b"
-       },
-       "n": 1
-      },
-      {
-       "id": "W1-2",
-       "br": "W",
-       "r": 1,
-       "a": {
-        "t": "e",
-        "id": "t15"
-       },
-       "b": {
-        "t": "e",
-        "id": "t3"
-       },
-       "n": 2
-      },
-      {
-       "id": "W1-3",
-       "br": "W",
-       "r": 1,
-       "a": {
-        "t": "e",
-        "id": "t42"
-       },
-       "b": {
-        "t": "e",
-        "id": "t46"
-       },
-       "n": 3
-      },
-      {
-       "id": "W1-4",
        "br": "W",
        "r": 1,
        "a": {
@@ -521,12 +479,67 @@
        },
        "b": {
         "t": "e",
-        "id": "t45"
+        "id": "t44"
        },
+       "id": "W1-1",
+       "n": 1
+      },
+      {
+       "br": "W",
+       "r": 1,
+       "a": {
+        "t": "e",
+        "id": "t18"
+       },
+       "b": {
+        "t": "e",
+        "id": "t32"
+       },
+       "id": "W1-2",
+       "n": 2
+      },
+      {
+       "br": "W",
+       "r": 1,
+       "a": {
+        "t": "e",
+        "id": "t15"
+       },
+       "b": {
+        "t": "b"
+       },
+       "id": "W1-3",
+       "n": 3
+      },
+      {
+       "br": "W",
+       "r": 1,
+       "a": {
+        "t": "e",
+        "id": "t6"
+       },
+       "b": {
+        "t": "e",
+        "id": "t42"
+       },
+       "id": "W1-4",
        "n": 4
       },
       {
+       "br": "W",
+       "r": 1,
+       "a": {
+        "t": "e",
+        "id": "t3"
+       },
+       "b": {
+        "t": "e",
+        "id": "t41"
+       },
        "id": "W1-5",
+       "n": 5
+      },
+      {
        "br": "W",
        "r": 1,
        "a": {
@@ -534,53 +547,27 @@
         "id": "t12"
        },
        "b": {
-        "t": "b"
-       },
-       "n": 5
-      },
-      {
-       "id": "W1-6",
-       "br": "W",
-       "r": 1,
-       "a": {
         "t": "e",
         "id": "t31"
        },
-       "b": {
-        "t": "e",
-        "id": "t18"
-       },
+       "id": "W1-6",
        "n": 6
       },
       {
-       "id": "W1-7",
        "br": "W",
        "r": 1,
        "a": {
         "t": "e",
-        "id": "t44"
+        "id": "t46"
        },
        "b": {
-        "t": "b"
+        "t": "e",
+        "id": "t45"
        },
+       "id": "W1-7",
        "n": 7
       },
       {
-       "id": "W1-8",
-       "br": "W",
-       "r": 1,
-       "a": {
-        "t": "e",
-        "id": "t32"
-       },
-       "b": {
-        "t": "e",
-        "id": "t41"
-       },
-       "n": 8
-      },
-      {
-       "id": "W2-1",
        "br": "W",
        "r": 2,
        "a": {
@@ -588,55 +575,54 @@
         "m": "W1-1"
        },
        "b": {
+        "t": "b"
+       },
+       "id": "W2-1",
+       "n": 8
+      },
+      {
+       "br": "W",
+       "r": 2,
+       "a": {
         "t": "w",
         "m": "W1-2"
        },
-       "n": 9
-      },
-      {
-       "id": "W2-2",
-       "br": "W",
-       "r": 2,
-       "a": {
+       "b": {
         "t": "w",
         "m": "W1-3"
        },
-       "b": {
+       "id": "W2-2",
+       "n": 9
+      },
+      {
+       "br": "W",
+       "r": 2,
+       "a": {
         "t": "w",
         "m": "W1-4"
        },
-       "n": 10
-      },
-      {
-       "id": "W2-3",
-       "br": "W",
-       "r": 2,
-       "a": {
+       "b": {
         "t": "w",
         "m": "W1-5"
        },
-       "b": {
-        "t": "w",
-        "m": "W1-6"
-       },
-       "n": 11
+       "id": "W2-3",
+       "n": 10
       },
       {
-       "id": "W2-4",
        "br": "W",
        "r": 2,
        "a": {
         "t": "w",
-        "m": "W1-7"
+        "m": "W1-6"
        },
        "b": {
         "t": "w",
-        "m": "W1-8"
+        "m": "W1-7"
        },
-       "n": 12
+       "id": "W2-4",
+       "n": 11
       },
       {
-       "id": "W3-1",
        "br": "W",
        "r": 3,
        "a": {
@@ -647,10 +633,10 @@
         "t": "w",
         "m": "W2-2"
        },
-       "n": 13
+       "id": "W3-1",
+       "n": 12
       },
       {
-       "id": "W3-2",
        "br": "W",
        "r": 3,
        "a": {
@@ -661,10 +647,10 @@
         "t": "w",
         "m": "W2-4"
        },
-       "n": 14
+       "id": "W3-2",
+       "n": 13
       },
       {
-       "id": "W4-1",
        "br": "W",
        "r": 4,
        "a": {
@@ -675,24 +661,24 @@
         "t": "w",
         "m": "W3-2"
        },
-       "n": 15
+       "id": "W4-1",
+       "n": 14
       },
       {
-       "id": "L1-1",
        "br": "L",
        "r": 1,
        "a": {
         "t": "l",
-        "m": "W1-2"
+        "m": "W1-1"
        },
        "b": {
         "t": "l",
-        "m": "W1-3"
+        "m": "W1-2"
        },
-       "n": 16
+       "id": "L1-1",
+       "n": 15
       },
       {
-       "id": "L1-2",
        "br": "L",
        "r": 1,
        "a": {
@@ -701,68 +687,26 @@
        },
        "b": {
         "t": "l",
-        "m": "W1-6"
-       },
-       "n": 17
-      },
-      {
-       "id": "L1-3",
-       "br": "L",
-       "r": 1,
-       "a": {
-        "t": "l",
-        "m": "W1-8"
-       },
-       "b": {
-        "t": "l",
-        "m": "W1-1"
-       },
-       "n": 18
-      },
-      {
-       "id": "L1-4",
-       "br": "L",
-       "r": 1,
-       "a": {
-        "t": "l",
         "m": "W1-5"
+       },
+       "id": "L1-2",
+       "n": 16
+      },
+      {
+       "br": "L",
+       "r": 1,
+       "a": {
+        "t": "l",
+        "m": "W1-6"
        },
        "b": {
         "t": "l",
         "m": "W1-7"
        },
-       "n": 19
+       "id": "L1-3",
+       "n": 17
       },
       {
-       "id": "L2-1",
-       "br": "L",
-       "r": 2,
-       "a": {
-        "t": "w",
-        "m": "L1-1"
-       },
-       "b": {
-        "t": "l",
-        "m": "W2-1"
-       },
-       "n": 20
-      },
-      {
-       "id": "L2-2",
-       "br": "L",
-       "r": 2,
-       "a": {
-        "t": "w",
-        "m": "L1-2"
-       },
-       "b": {
-        "t": "l",
-        "m": "W2-2"
-       },
-       "n": 21
-      },
-      {
-       "id": "L2-3",
        "br": "L",
        "r": 2,
        "a": {
@@ -773,24 +717,38 @@
         "t": "l",
         "m": "W2-3"
        },
-       "n": 22
+       "id": "L2-1",
+       "n": 18
       },
       {
-       "id": "L2-4",
        "br": "L",
        "r": 2,
        "a": {
         "t": "w",
-        "m": "L1-4"
+        "m": "L1-2"
+       },
+       "b": {
+        "t": "l",
+        "m": "W2-2"
+       },
+       "id": "L2-2",
+       "n": 19
+      },
+      {
+       "br": "L",
+       "r": 2,
+       "a": {
+        "t": "w",
+        "m": "L1-1"
        },
        "b": {
         "t": "l",
         "m": "W2-4"
        },
-       "n": 23
+       "id": "L2-3",
+       "n": 20
       },
       {
-       "id": "L3-1",
        "br": "L",
        "r": 3,
        "a": {
@@ -798,27 +756,26 @@
         "m": "L2-1"
        },
        "b": {
-        "t": "w",
-        "m": "L2-2"
+        "t": "b"
        },
-       "n": 24
+       "id": "L3-1",
+       "n": 21
       },
       {
-       "id": "L3-2",
        "br": "L",
        "r": 3,
        "a": {
         "t": "w",
-        "m": "L2-3"
+        "m": "L2-2"
        },
        "b": {
         "t": "w",
-        "m": "L2-4"
+        "m": "L2-3"
        },
-       "n": 25
+       "id": "L3-2",
+       "n": 22
       },
       {
-       "id": "L4-1",
        "br": "L",
        "r": 4,
        "a": {
@@ -829,10 +786,10 @@
         "t": "l",
         "m": "W3-1"
        },
-       "n": 26
+       "id": "L4-1",
+       "n": 23
       },
       {
-       "id": "L4-2",
        "br": "L",
        "r": 4,
        "a": {
@@ -843,10 +800,10 @@
         "t": "l",
         "m": "W3-2"
        },
-       "n": 27
+       "id": "L4-2",
+       "n": 24
       },
       {
-       "id": "L5-1",
        "br": "L",
        "r": 5,
        "a": {
@@ -857,10 +814,10 @@
         "t": "w",
         "m": "L4-2"
        },
-       "n": 28
+       "id": "L5-1",
+       "n": 25
       },
       {
-       "id": "L6-1",
        "br": "L",
        "r": 6,
        "a": {
@@ -871,7 +828,8 @@
         "t": "l",
         "m": "W4-1"
        },
-       "n": 29
+       "id": "L6-1",
+       "n": 26
       },
       {
        "id": "GF",
@@ -885,7 +843,7 @@
         "t": "w",
         "m": "L6-1"
        },
-       "n": 30
+       "n": 27
       },
       {
        "id": "GR",
@@ -902,12 +860,12 @@
         "m": "GF",
         "s": "b"
        },
-       "n": 31
+       "n": 28
       }
      ],
      "results": {},
      "second": true,
-     "style": "second",
+     "style": "fair",
      "po": null,
      "qual": 0
     },
