@@ -1,6 +1,6 @@
 {
- "rev": 27,
- "at": "2026-10-06T20:05:03.977Z",
+ "rev": 28,
+ "at": "2026-10-07T04:51:48.916Z",
  "S": {
   "name": "CEGC Pickleball Tournament 2026",
   "teamSize": 2,
@@ -172,6 +172,11 @@
     "name": "Christian Albers",
     "skill": 2,
     "singles": false
+   },
+   {
+    "id": "p47",
+    "name": "Lilly",
+    "skill": 2
    }
   ],
   "teams": [
@@ -266,8 +271,8 @@
    {
     "id": "t45",
     "members": [
-     "p28",
-     "p39"
+     "p39",
+     "p47"
     ],
     "custom": "Alan & John"
    },
@@ -278,6 +283,13 @@
      "p24"
     ],
     "custom": "Isaac & Trace"
+   },
+   {
+    "id": "t48",
+    "members": [
+     "p25",
+     "p28"
+    ]
    }
   ],
   "apart": [
@@ -300,6 +312,32 @@
      "mode": "teams",
      "entrants": [
       {
+       "id": "t48",
+       "name": "Satchit Nagpal & Alan Weible",
+       "memberIds": [
+        "p25",
+        "p28"
+       ],
+       "members": [
+        "Satchit Nagpal",
+        "Alan Weible"
+       ],
+       "skill": 2.5
+      },
+      {
+       "id": "t42",
+       "name": "Adithya and Sadie",
+       "memberIds": [
+        "p38",
+        "p29"
+       ],
+       "members": [
+        "Adithya Tata",
+        "Sadie Jarrell"
+       ],
+       "skill": 1.5
+      },
+      {
        "id": "t15",
        "name": "Rahman and Hossain",
        "memberIds": [
@@ -309,6 +347,58 @@
        "members": [
         "Md Majidur Rahman",
         "Md Imam Hossain"
+       ],
+       "skill": 2
+      },
+      {
+       "id": "t45",
+       "name": "Alan & John",
+       "memberIds": [
+        "p39",
+        "p47"
+       ],
+       "members": [
+        "John Clay",
+        "Lilly"
+       ],
+       "skill": 2.5
+      },
+      {
+       "id": "t3",
+       "name": "Ryan and Kevin",
+       "memberIds": [
+        "p1",
+        "p2"
+       ],
+       "members": [
+        "Ryan Burrows",
+        "Kevin Donnelly"
+       ],
+       "skill": 2.5
+      },
+      {
+       "id": "t41",
+       "name": "Aleah & Allison",
+       "memberIds": [
+        "p20",
+        "p22"
+       ],
+       "members": [
+        "Aleah Treiterer",
+        "Allison Korpi"
+       ],
+       "skill": 2.5
+      },
+      {
+       "id": "t18",
+       "name": "Virginia and Carol",
+       "memberIds": [
+        "p16",
+        "p17"
+       ],
+       "members": [
+        "Virginia Lopez",
+        "Ana Carolina Silva Barbeta"
        ],
        "skill": 2
       },
@@ -324,6 +414,58 @@
         "Tanay Jawdekar"
        ],
        "skill": 1.5
+      },
+      {
+       "id": "t31",
+       "name": "Krutarth and Anant",
+       "memberIds": [
+        "p26",
+        "p27"
+       ],
+       "members": [
+        "Krutarth Pandit",
+        "Anant Sohale"
+       ],
+       "skill": 1.5
+      },
+      {
+       "id": "t9",
+       "name": "Masum and Hasan",
+       "memberIds": [
+        "p7",
+        "p8"
+       ],
+       "members": [
+        "Mahmud Hussain Masum",
+        "Abdulla Hasan"
+       ],
+       "skill": 2.5
+      },
+      {
+       "id": "t6",
+       "name": "Hitarth and Ajeet",
+       "memberIds": [
+        "p4",
+        "p5"
+       ],
+       "members": [
+        "Hitarth Thakkar",
+        "Ajeet Singh"
+       ],
+       "skill": 2
+      },
+      {
+       "id": "t32",
+       "name": "Vincent and Chandni",
+       "memberIds": [
+        "p23",
+        "p30"
+       ],
+       "members": [
+        "Vincent Copeland",
+        "Chandni Bhat"
+       ],
+       "skill": 2.5
       },
       {
        "id": "t44",
@@ -350,123 +492,6 @@
         "Trace Pearce"
        ],
        "skill": 2.5
-      },
-      {
-       "id": "t45",
-       "name": "Alan & John",
-       "memberIds": [
-        "p28",
-        "p39"
-       ],
-       "members": [
-        "Alan Weible",
-        "John Clay"
-       ],
-       "skill": 2.5
-      },
-      {
-       "id": "t32",
-       "name": "Vincent and Chandni",
-       "memberIds": [
-        "p23",
-        "p30"
-       ],
-       "members": [
-        "Vincent Copeland",
-        "Chandni Bhat"
-       ],
-       "skill": 2.5
-      },
-      {
-       "id": "t18",
-       "name": "Virginia and Carol",
-       "memberIds": [
-        "p16",
-        "p17"
-       ],
-       "members": [
-        "Virginia Lopez",
-        "Ana Carolina Silva Barbeta"
-       ],
-       "skill": 2
-      },
-      {
-       "id": "t6",
-       "name": "Hitarth and Ajeet",
-       "memberIds": [
-        "p4",
-        "p5"
-       ],
-       "members": [
-        "Hitarth Thakkar",
-        "Ajeet Singh"
-       ],
-       "skill": 2
-      },
-      {
-       "id": "t42",
-       "name": "Adithya and Sadie",
-       "memberIds": [
-        "p38",
-        "p29"
-       ],
-       "members": [
-        "Adithya Tata",
-        "Sadie Jarrell"
-       ],
-       "skill": 1.5
-      },
-      {
-       "id": "t9",
-       "name": "Masum and Hasan",
-       "memberIds": [
-        "p7",
-        "p8"
-       ],
-       "members": [
-        "Mahmud Hussain Masum",
-        "Abdulla Hasan"
-       ],
-       "skill": 2.5
-      },
-      {
-       "id": "t31",
-       "name": "Krutarth and Anant",
-       "memberIds": [
-        "p26",
-        "p27"
-       ],
-       "members": [
-        "Krutarth Pandit",
-        "Anant Sohale"
-       ],
-       "skill": 1.5
-      },
-      {
-       "id": "t41",
-       "name": "Aleah & Allison",
-       "memberIds": [
-        "p20",
-        "p22"
-       ],
-       "members": [
-        "Aleah Treiterer",
-        "Allison Korpi"
-       ],
-       "skill": 2.5
-      },
-      {
-       "id": "t3",
-       "name": "Ryan and Kevin",
-       "memberIds": [
-        "p1",
-        "p2"
-       ],
-       "members": [
-        "Ryan Burrows",
-        "Kevin Donnelly"
-       ],
-       "skill": 2.5
       }
      ],
      "matches": [
@@ -475,11 +500,11 @@
        "r": 1,
        "a": {
         "t": "e",
-        "id": "t15"
+        "id": "t48"
        },
        "b": {
         "t": "e",
-        "id": "t6"
+        "id": "t12"
        },
        "id": "W1-1",
        "n": 1
@@ -489,11 +514,11 @@
        "r": 1,
        "a": {
         "t": "e",
-        "id": "t42"
+        "id": "t31"
        },
        "b": {
         "t": "e",
-        "id": "t46"
+        "id": "t45"
        },
        "id": "W1-2",
        "n": 2
@@ -503,55 +528,14 @@
        "r": 1,
        "a": {
         "t": "e",
-        "id": "t3"
+        "id": "t44"
        },
        "b": {
         "t": "e",
-        "id": "t45"
+        "id": "t3"
        },
        "id": "W1-3",
        "n": 3
-      },
-      {
-       "br": "W",
-       "r": 1,
-       "a": {
-        "t": "e",
-        "id": "t41"
-       },
-       "b": {
-        "t": "b"
-       },
-       "id": "W1-4",
-       "n": 4
-      },
-      {
-       "br": "W",
-       "r": 1,
-       "a": {
-        "t": "e",
-        "id": "t12"
-       },
-       "b": {
-        "t": "e",
-        "id": "t18"
-       },
-       "id": "W1-5",
-       "n": 5
-      },
-      {
-       "br": "W",
-       "r": 1,
-       "a": {
-        "t": "e",
-        "id": "t9"
-       },
-       "b": {
-        "t": "e",
-        "id": "t44"
-       },
-       "id": "W1-6",
-       "n": 6
       },
       {
        "br": "W",
@@ -562,7 +546,49 @@
        },
        "b": {
         "t": "e",
-        "id": "t31"
+        "id": "t42"
+       },
+       "id": "W1-4",
+       "n": 4
+      },
+      {
+       "br": "W",
+       "r": 1,
+       "a": {
+        "t": "e",
+        "id": "t18"
+       },
+       "b": {
+        "t": "e",
+        "id": "t9"
+       },
+       "id": "W1-5",
+       "n": 5
+      },
+      {
+       "br": "W",
+       "r": 1,
+       "a": {
+        "t": "e",
+        "id": "t15"
+       },
+       "b": {
+        "t": "e",
+        "id": "t46"
+       },
+       "id": "W1-6",
+       "n": 6
+      },
+      {
+       "br": "W",
+       "r": 1,
+       "a": {
+        "t": "e",
+        "id": "t41"
+       },
+       "b": {
+        "t": "e",
+        "id": "t6"
        },
        "id": "W1-7",
        "n": 7
@@ -589,8 +615,7 @@
         "m": "W1-3"
        },
        "b": {
-        "t": "w",
-        "m": "W1-4"
+        "t": "b"
        },
        "id": "W2-2",
        "n": 9
@@ -600,11 +625,11 @@
        "r": 2,
        "a": {
         "t": "w",
-        "m": "W1-5"
+        "m": "W1-4"
        },
        "b": {
         "t": "w",
-        "m": "W1-6"
+        "m": "W1-5"
        },
        "id": "W2-3",
        "n": 10
@@ -614,10 +639,11 @@
        "r": 2,
        "a": {
         "t": "w",
-        "m": "W1-7"
+        "m": "W1-6"
        },
        "b": {
-        "t": "b"
+        "t": "w",
+        "m": "W1-7"
        },
        "id": "W2-4",
        "n": 11
@@ -665,53 +691,7 @@
        "n": 14
       }
      ],
-     "results": {
-      "W1-1": {
-       "sig": "t15|t6",
-       "sa": 11,
-       "sb": 5
-      },
-      "W1-2": {
-       "sig": "t42|t46",
-       "sa": 11,
-       "sb": 8
-      },
-      "W1-3": {
-       "sig": "t3|t45",
-       "sa": 10,
-       "sb": 12
-      },
-      "W1-5": {
-       "sig": "t12|t18",
-       "sa": null,
-       "sb": null
-      },
-      "W1-6": {
-       "sig": "t9|t44",
-       "sa": null,
-       "sb": null
-      },
-      "W1-7": {
-       "sig": "t32|t31",
-       "sa": null,
-       "sb": null
-      },
-      "W2-1": {
-       "sig": "t15|t42",
-       "sa": 13,
-       "sb": 11
-      },
-      "W2-2": {
-       "sig": "t3|t41",
-       "sa": 12,
-       "sb": 14
-      },
-      "W2-3": {
-       "sig": "t18|t44",
-       "sa": 5,
-       "sb": 11
-      }
-     },
+     "results": {},
      "second": false,
      "style": "fair",
      "po": null,
@@ -725,160 +705,7 @@
     "swissRounds": 3,
     "qual": 4,
     "second": true,
-    "t": {
-     "name": "CEGC Pickleball Tournament 2026 · Singles",
-     "format": "roll",
-     "mode": "singles",
-     "entrants": [
-      {
-       "id": "p4",
-       "name": "Hitarth Thakkar",
-       "members": [],
-       "memberIds": [
-        "p4"
-       ],
-       "skill": 2,
-       "mates": [
-        "p5"
-       ]
-      },
-      {
-       "id": "p2",
-       "name": "Kevin Donnelly",
-       "members": [],
-       "memberIds": [
-        "p2"
-       ],
-       "skill": 2,
-       "mates": [
-        "p1"
-       ]
-      },
-      {
-       "id": "p5",
-       "name": "Ajeet Singh",
-       "members": [],
-       "memberIds": [
-        "p5"
-       ],
-       "skill": 2,
-       "mates": [
-        "p4"
-       ]
-      },
-      {
-       "id": "p25",
-       "name": "Satchit Nagpal",
-       "members": [],
-       "memberIds": [
-        "p25"
-       ],
-       "skill": 3,
-       "mates": []
-      },
-      {
-       "id": "p1",
-       "name": "Ryan Burrows",
-       "members": [],
-       "memberIds": [
-        "p1"
-       ],
-       "skill": 3,
-       "mates": [
-        "p2"
-       ]
-      },
-      {
-       "id": "p19",
-       "name": "Isaac Doughan",
-       "members": [],
-       "memberIds": [
-        "p19"
-       ],
-       "skill": 2,
-       "mates": [
-        "p24"
-       ]
-      },
-      {
-       "id": "p24",
-       "name": "Trace Pearce",
-       "members": [],
-       "memberIds": [
-        "p24"
-       ],
-       "skill": 3,
-       "mates": [
-        "p19"
-       ]
-      }
-     ],
-     "matches": [
-      {
-       "id": "Q1",
-       "br": "W",
-       "r": 1,
-       "a": {
-        "t": "e",
-        "id": "p4"
-       },
-       "b": {
-        "t": "e",
-        "id": "p2"
-       },
-       "n": 1
-      },
-      {
-       "id": "Q2",
-       "br": "W",
-       "r": 1,
-       "a": {
-        "t": "e",
-        "id": "p5"
-       },
-       "b": {
-        "t": "e",
-        "id": "p25"
-       },
-       "n": 2
-      },
-      {
-       "id": "Q3",
-       "br": "W",
-       "r": 2,
-       "a": {
-        "t": "w",
-        "m": "Q1"
-       },
-       "b": {
-        "t": "w",
-        "m": "Q2"
-       },
-       "n": 3
-      },
-      {
-       "id": "Q4",
-       "br": "W",
-       "r": 1,
-       "a": {
-        "t": "e",
-        "id": "p1"
-       },
-       "b": {
-        "t": "e",
-        "id": "p19"
-       },
-       "n": 4
-      }
-     ],
-     "results": {},
-     "closed": false,
-     "seq": 4,
-     "auto": false,
-     "style": "roll",
-     "po": null,
-     "final": null
-    }
+    "t": null
    }
   },
   "sched": {
@@ -886,74 +713,7 @@
    "start": "16:30",
    "len": 30,
    "rest": false,
-   "slots": [
-    {
-     "items": [
-      {
-       "ev": "doubles",
-       "id": "W1-5",
-       "court": 2,
-       "players": [
-        "p10",
-        "p11",
-        "p16",
-        "p17"
-       ]
-      },
-      {
-       "ev": "doubles",
-       "id": "W1-6",
-       "court": 3,
-       "players": [
-        "p7",
-        "p8",
-        "p40",
-        "p21"
-       ]
-      },
-      {
-       "ev": "doubles",
-       "id": "W1-7",
-       "court": 4,
-       "players": [
-        "p23",
-        "p30",
-        "p26",
-        "p27"
-       ]
-      },
-      {
-       "ev": "doubles",
-       "id": "W2-2",
-       "court": 5,
-       "players": [
-        "p28",
-        "p39",
-        "p20",
-        "p22"
-       ]
-      },
-      {
-       "ev": "singles",
-       "id": "Q1",
-       "court": 6,
-       "players": [
-        "p4",
-        "p2"
-       ]
-      },
-      {
-       "ev": "singles",
-       "id": "Q2",
-       "court": 7,
-       "players": [
-        "p5",
-        "p25"
-       ]
-      }
-     ]
-    }
-   ],
+   "slots": [],
    "off": [],
    "names": {
     "1": "Court 13A",
@@ -966,7 +726,7 @@
     "8": "Court 16B"
    }
   },
-  "uid": 47,
+  "uid": 49,
   "sample": false
  }
 }
