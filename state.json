@@ -1,6 +1,6 @@
 {
- "rev": 28,
- "at": "2026-10-07T04:51:48.916Z",
+ "rev": 29,
+ "at": "2026-10-07T04:58:24.828Z",
  "S": {
   "name": "CEGC Pickleball Tournament 2026",
   "teamSize": 2,
@@ -9,127 +9,127 @@
     "id": "p1",
     "name": "Ryan Burrows",
     "skill": 3,
-    "singles": true
+    "singles": false
    },
    {
     "id": "p2",
     "name": "Kevin Donnelly",
     "skill": 2,
-    "singles": true
+    "singles": false
    },
    {
     "id": "p4",
     "name": "Hitarth Thakkar",
     "skill": 2,
-    "singles": true
+    "singles": false
    },
    {
     "id": "p5",
     "name": "Ajeet Singh",
     "skill": 2,
-    "singles": true
+    "singles": false
    },
    {
     "id": "p7",
     "name": "Mahmud Hussain Masum",
     "skill": 3,
-    "singles": true
+    "singles": false
    },
    {
     "id": "p8",
     "name": "Abdulla Hasan",
     "skill": 2,
-    "singles": true
+    "singles": false
    },
    {
     "id": "p10",
     "name": "Shekhar Shinde",
     "skill": 1,
-    "singles": true
+    "singles": false
    },
    {
     "id": "p11",
     "name": "Tanay Jawdekar",
     "skill": 2,
-    "singles": true
+    "singles": false
    },
    {
     "id": "p13",
     "name": "Md Majidur Rahman",
     "skill": 2,
-    "singles": true
+    "singles": false
    },
    {
     "id": "p14",
     "name": "Md Imam Hossain",
     "skill": 2,
-    "singles": true
+    "singles": false
    },
    {
     "id": "p16",
     "name": "Virginia Lopez",
     "skill": 2,
-    "singles": true
+    "singles": false
    },
    {
     "id": "p17",
     "name": "Ana Carolina Silva Barbeta",
     "skill": 2,
-    "singles": true
+    "singles": false
    },
    {
     "id": "p19",
     "name": "Isaac Doughan",
     "skill": 2,
-    "singles": true
+    "singles": false
    },
    {
     "id": "p20",
     "name": "Aleah Treiterer",
     "skill": 2,
-    "singles": true
+    "singles": false
    },
    {
     "id": "p21",
     "name": "Abby Mapili",
     "skill": 3,
-    "singles": true
+    "singles": false
    },
    {
     "id": "p22",
     "name": "Allison Korpi",
     "skill": 3,
-    "singles": true
+    "singles": false
    },
    {
     "id": "p23",
     "name": "Vincent Copeland",
     "skill": 3,
-    "singles": true
+    "singles": false
    },
    {
     "id": "p24",
     "name": "Trace Pearce",
     "skill": 3,
-    "singles": true
+    "singles": false
    },
    {
     "id": "p25",
     "name": "Satchit Nagpal",
     "skill": 3,
-    "singles": true
+    "singles": false
    },
    {
     "id": "p26",
     "name": "Krutarth Pandit",
     "skill": 1,
-    "singles": true
+    "singles": false
    },
    {
     "id": "p27",
     "name": "Anant Sohale",
     "skill": 2,
-    "singles": true
+    "singles": false
    },
    {
     "id": "p28",
@@ -176,7 +176,8 @@
    {
     "id": "p47",
     "name": "Lilly",
-    "skill": 2
+    "skill": 2,
+    "singles": false
    }
   ],
   "teams": [
@@ -289,7 +290,8 @@
     "members": [
      "p25",
      "p28"
-    ]
+    ],
+    "custom": "Satchit & Alan"
    }
   ],
   "apart": [
